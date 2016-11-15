@@ -20,7 +20,6 @@ myman.size = 10
 print myman.size
 man().mans()
 
-os.chdir('C:\Users\dell\Desktop')
 print os.getcwd()
 G = nx.random_graphs.barabasi_albert_graph(30,1)
 nx.draw(G)

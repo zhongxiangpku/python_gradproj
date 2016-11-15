@@ -1,9 +1,10 @@
-[dbconfig]
-host:'127.0.0.1'
-user:'root'
-password:'admin'
-databasename:'pythondb'
-charset:'utf8'
+[database]
+dbhost=127.0.0.1
+dbport=3366
+dbuser=root
+dbpassword=admin
+dbname=pythondb
+dbcharset=utf8
 
 [robotconfig]
 BASE_SPOT_URL= "http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&surl="

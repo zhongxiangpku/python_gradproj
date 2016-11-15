@@ -10,6 +10,7 @@ import json
 import time
 import pinyin
 import string
+import mod_config
 
 BASE_URL = "http://lvyou.baidu.com/destination/ajax/jingdian?format=ajax&surl="
 
@@ -26,7 +27,7 @@ def getSpotsCount(url):
 def getSpots(url,city):
     try:
         mysql = "insert into spot(ename,cname,city,lat,lng,formataddress,status,finish,createtime,updatetime) values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        db = MySQLdb.connect('127.0.0.1', 'root', 'admin', 'pythondb', charset="utf8")
+        db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, mod_config.dbcharset)
         cursor = db.cursor()
 
         req = urllib2.Request(url)
@@ -70,7 +71,11 @@ def getSpots(url,city):
 def crawlSpot():
     try:
         mysql = 'select * from city where finish = 0'
-        db = MySQLdb.connect('localhost','root','admin','pythondb',charset='utf8')
+        db = MySQLdb.connect(mod_config.dbhost,
+                             mod_config.dbuser,
+                             mod_config.dbpassword,
+                             mod_config.dbname,
+                             mod_config.dbcharset)
         cursor = db.cursor()
         cursor.execute(mysql)
         results = cursor.fetchall()
@@ -99,7 +104,13 @@ def crawlSpot():
 def getNote(city,cname,ename,maxcount):
     try:
         mysql = "insert into note(nid,title,url,postime,status,finish,source,spot,city,abs,departure,destinations,path,places,viewcount,favoritecount,recommendcount,createtime,updatetime) values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        db = MySQLdb.connect('localhost', 'root', 'admin', 'pythondb', charset='utf8')
+        db = MySQLdb.connect(mod_config.dbhost,
+                             mod_config.dbuser,
+                             mod_config.dbpassword,
+                             mod_config.dbname,
+                             mod_config.dbcharset)
+
+
         cursor = db.cursor()
         i = 0
         index = 0
@@ -168,7 +179,11 @@ def getNote(city,cname,ename,maxcount):
 def crawlNotes():
     try:
         mysql = 'select * from spot where finish = 0'
-        db = MySQLdb.connect('localhost', 'root', 'admin', 'pythondb', charset='utf8')
+        db = MySQLdb.connect(mod_config.dbhost,
+                             mod_config.dbuser,
+                             mod_config.dbpassword,
+                             mod_config.dbname,
+                             mod_config.dbcharset)
         cursor = db.cursor()
         cursor.execute(mysql)
         results = cursor.fetchall()
