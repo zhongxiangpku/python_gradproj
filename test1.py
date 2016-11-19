@@ -18,11 +18,13 @@ class man():
 myman = man()
 myman.size = 10
 print myman.size
+myman.size = 20
+print myman.size
 man().mans()
 
 os.chdir('C:\Users\dell\Desktop')
 print os.getcwd()
 G = nx.random_graphs.barabasi_albert_graph(30,1)
 nx.draw(G)
-plt.savefig("ba.png")
+#plt.savefig("ba.png")
 plt.show()    
