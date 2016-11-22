@@ -12,6 +12,7 @@ def readfile(file):
         for line in lines:
             line = line.strip('\r\n')
             items = string.split(line, ',')
+            mysql = "update citynote set departure ='"+items[1]+"' where departure ='"+items[0]+ "';"
             print mysql
     except Exception,e:
         print Exception,":",e
