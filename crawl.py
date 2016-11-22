@@ -200,6 +200,98 @@ def crawlNotes():
         print msg
 
 
+def getCNote(city,cname,ename,maxcount):
+    try:
+        mysql = "insert into citynote(nid,title,url,postime,status,finish,source,spot,city,abs,departure,destinations,path,places,viewcount,favoritecount,recommendcount,createtime,updatetime) values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        db = MySQLdb.connect('localhost', 'root', 'admin', 'pythondb', charset='utf8')
+        cursor = db.cursor()
+        i = 0
+        index = 0
+        while i<maxcount:
+            currentURL = "https://lvyou.baidu.com/search/ajax/search?format=ajax&word=" + cname + "&surl=" + ename + "&pn=" + str(i)+ "&rn=10&t=" +str(time.time())
+            currentURL = currentURL.encode("utf8")
+            req = urllib2.Request(currentURL)
+            res_data = urllib2.urlopen(req)
+            res = res_data.read()
+            # print res
+            respJson = json.loads(res)
+            if respJson['errno'] == 0:
+                notes_list = respJson['data']['search_res']['notes_list']
+                print respJson['data']['search_res']
+                if notes_list is None or len(notes_list) <= 1:
+                    break
+                for note in notes_list:
+                    nid = ''
+                    recommend_count=0
+                    favorite_count=0
+                    view_count=0
+                    publish_time =0
+                    title=''
+                    departure=''
+                    places=''
+                    destinations=''
+                    path=''
+                    loc=''
+                    abstracts=''
+
+                    nid = note['nid']
+                    recommend_count = note['recommend_count']
+                    view_count = note['view_count']
+                    favorite_count = note['favorite_count']
+
+                    publish_time = note['publish_time']
+                    ltime = time.localtime(float(publish_time))
+                    postime = time.strftime("%Y-%m-%d %H:%M:%S", ltime)
+
+                    title = note['title']
+                    departure = note['departure']
+                    places = note['places']
+                    destinations = note['destinations']
+                    path = note['path']
+                    loc = note['loc']
+                    abstracts = note['content']
+
+                    now = int(time.time())
+                    timeArray = time.localtime(now)
+                    otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+
+                    destinationStrs = string.join(destinations, '-')
+                    pathStrs = string.join(path, '-')
+                    placeStrs = string.join(places, '-')
+
+                    print 'index=%d' % index, nid, departure, city, cname, loc
+                    startend = departure+city+loc
+                    if startend not in myset:
+                        cursor.execute(mysql,(nid,title,loc,postime,1,0,'百度',cname,city,abstracts,departure,destinationStrs,pathStrs,placeStrs,view_count,favorite_count,recommend_count,otherStyleTime,otherStyleTime))
+                        db.commit()
+                        index+=1
+                        myset.add(startend)
+            i+=10
+    except Exception,msg:
+        db.rollback()
+        print msg
+
+def crawlCNotes():
+    try:
+        mysql = 'select * from spot where finish = 0'
+        db = MySQLdb.connect('localhost', 'root', 'admin', 'pythondb', charset='utf8')
+        cursor = db.cursor()
+        cursor.execute(mysql)
+        results = cursor.fetchall()
+        index = 1
+        for row in results:
+            print str(index),row[2],row[1],row[3]
+            getCNote(row[3],row[2],row[1],5000)
+            mysql2 = 'update spot set finish = 1 where id = %s' % row[0]
+            cursor.execute(mysql2)
+            db.commit()
+            index+=1
+    except Exception,msg:
+        #db.rollback()
+        print msg
+
+myset = set()
 if __name__ == '__main__':
-    crawlSpot()
-    crawlNotes()
+    # crawlSpot()
+    # crawlNotes()
+    crawlCNotes()
