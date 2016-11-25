@@ -2,6 +2,7 @@ import os
 import MySQLdb
 import codecs
 import string
+import mod_config
 
 def readfile(file):
     os.chdir('C:\Users\dell\Desktop')
@@ -15,7 +16,7 @@ def readfile(file):
             mysql = "update citynote set departure ='"+items[1]+"' where departure ='"+items[0]+ "';"
             print mysql
     except Exception,e:
-        print Exception,":",e
+        print Exception, ":", e
 
 def getCityUndirectEdgePairs(file):
     db = MySQLdb.connect('127.0.0.1', 'root', 'admin', 'pythondb', charset="gbk")
@@ -83,7 +84,8 @@ def getCityDirectEdgePairs(file):
         db.close()
 
 def getSpotUndirectEdgePairs(file):
-    db = MySQLdb.connect('127.0.0.1', 'root', 'admin', 'pythondb', charset="gbk")
+    print mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, mod_config.dbcharset
+    db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, mod_config.dbcharset)
     cursor = db.cursor()
     fs = codecs.open(file, 'w+', encoding='gbk')
     try:
@@ -96,27 +98,36 @@ def getSpotUndirectEdgePairs(file):
             spot = row[2]
             url = row[3]
             pair1 = departure + "," + destination+","+url
+            # departure city -> destination city
             print pair1
-            if pair1 in undirectSpotEdgeSet:
-                undirectSpotEdgeMap[pair1] += 1
+            if pair1 in undirectCitySpotEdgeSet:
+                undirectCitySpotEdgeMap[pair1] += 1
             else:
-                undirectSpotEdgeMap[pair1] = 1
-                undirectSpotEdgeSet.add(pair1)
+                undirectCitySpotEdgeMap[pair1] = 1
+                undirectCitySpotEdgeSet.add(pair1)
 
+            # destination city -> destination spot
             pair2 = destination+","+spot
-            if pair2 in undirectCitySpotEdgeSet:
-                undirectCitySpotEdgeMap[pair2]+=1
+            if pair2 in undirectSpotEdgeSet:
+                undirectSpotEdgeMap[pair2] += 1
             else:
-                undirectCitySpotEdgeMap[pair2] = 1
-                undirectCitySpotEdgeSet.add(pair2)
+                undirectSpotEdgeMap[pair2] = 1
+                undirectSpotEdgeSet.add(pair2)
         sum = 0
+        for key, value in undirectCitySpotEdgeMap.items():
+            key2 = key.rfind(',')
+            print key2
+            fs.write(key2 + "," + str(value) + "\r\n")
+            print key, value
+            sum += value
+
         for key, value in undirectSpotEdgeMap.items():
             fs.write(key + "," + str(value) + "\r\n")
-            print key,value
+            print key, value
             sum += value
         fs.flush()
         fs.close()
-        print len(undirectSpotEdgeMap), sum
+        print len(undirectCitySpotEdgeMap), len(undirectSpotEdgeMap), sum
     except Exception, msg:
         print msg
     finally:
