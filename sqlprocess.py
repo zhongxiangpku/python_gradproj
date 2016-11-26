@@ -15,11 +15,14 @@ def readfile(file):
             items = string.split(line, ',')
             mysql = "update citynote set departure ='"+items[1]+"' where departure ='"+items[0]+ "';"
             print mysql
-    except Exception,e:
+    except Exception, e:
         print Exception, ":", e
 
 def getCityUndirectEdgePairs(file):
-    db = MySQLdb.connect('127.0.0.1', 'root', 'admin', 'pythondb', charset="gbk")
+    # db = MySQLdb.connect('127.0.0.1', 'root', 'admin', 'pythondb', charset="gbk")
+    print mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, mod_config.dbcharset
+    db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
+                         charset=mod_config.dbcharset)
     cursor = db.cursor()
     fs = codecs.open(file, 'w+',encoding='gbk')
     try:
@@ -33,27 +36,30 @@ def getCityUndirectEdgePairs(file):
             pair2 = destination+","+departure
             #print pair1,pair2
             if pair1 in undirectEdgeSet:
-                undirectEdgeMap[pair1]+=1
+                undirectEdgeMap[pair1] += 1
             elif pair2 in undirectEdgeSet:
                 undirectEdgeMap[pair2] += 1
             else:
-                undirectEdgeMap[pair1]=1
+                undirectEdgeMap[pair1] = 1
                 undirectEdgeSet.add(pair1)
         sum = 0
-        for key,value in undirectEdgeMap.items():
+        for key, value in undirectEdgeMap.items():
             fs.write(key+","+str(value)+"\r\n")
             #print key,value
-            sum+=value
+            sum += value
         fs.flush()
         fs.close()
-        print len(undirectEdgeMap),sum
+        print len(undirectEdgeMap), sum
     except Exception, msg:
         print msg
     finally:
         db.close()
 
 def getCityDirectEdgePairs(file):
-    db = MySQLdb.connect('127.0.0.1', 'root', 'admin', 'pythondb', charset="gbk")
+    #db = MySQLdb.connect('127.0.0.1', 'root', 'admin', 'pythondb', charset="gbk")
+    print mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, mod_config.dbcharset
+    db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
+                         charset=mod_config.dbcharset)
     cursor = db.cursor()
     fs = codecs.open(file, 'w+',encoding='gbk')
     try:
@@ -77,17 +83,18 @@ def getCityDirectEdgePairs(file):
             sum+=value
         fs.flush()
         fs.close()
-        print len(directEdgeMap),sum
+        print len(directEdgeMap), sum
     except Exception, msg:
         print msg
     finally:
         db.close()
 
 def getSpotUndirectEdgePairs(file):
-    print mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, mod_config.dbcharset
-    db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, mod_config.dbcharset)
+    # print mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, mod_config.dbcharset
+    db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, charset=mod_config.dbcharset)#'222.29.117.151', 'root', 'admin', 'pythondb', charset='utf8')
     cursor = db.cursor()
-    fs = codecs.open(file, 'w+', encoding='gbk')
+
+    fs = codecs.open(file, 'w+', encoding='utf8')
     try:
         mysql = 'select departure,city,spot,url from note'
         cursor.execute(mysql)
@@ -108,6 +115,7 @@ def getSpotUndirectEdgePairs(file):
 
             # destination city -> destination spot
             pair2 = destination+","+spot
+            print pair2
             if pair2 in undirectSpotEdgeSet:
                 undirectSpotEdgeMap[pair2] += 1
             else:
@@ -116,8 +124,9 @@ def getSpotUndirectEdgePairs(file):
         sum = 0
         for key, value in undirectCitySpotEdgeMap.items():
             key2 = key.rfind(',')
-            print key2
-            fs.write(key2 + "," + str(value) + "\r\n")
+            key = key[0:key2]
+            print key
+            fs.write(key + "," + str(value) + "\r\n")
             print key, value
             sum += value
 
@@ -151,11 +160,13 @@ directSpotEdgeMap = {}
 # file = 'errorcityname2.csv'
 # readfile(file)
 
-cityUndirectEdgeFile = 'C:\Users\dell\Desktop\undirectCityEdges.txt'
-cityDirectEdgeFile = 'C:\Users\dell\Desktop\directCityEdges.txt'
-spotUndirectEdgeFile = 'C:\Users\dell\Desktop\undirectSpotEdges.txt'
-spotDirectEdgeFile = 'C:\Users\dell\Desktop\directSpotEdges.txt'
+pwd = os.getcwd()
+print pwd
+cityUndirectEdgeFile = pwd+'/undirectCityEdges.txt'
+cityDirectEdgeFile = pwd+'/directCityEdges.txt'
+spotUndirectEdgeFile = pwd+'/undirectSpotEdges.txt'
+spotDirectEdgeFile = pwd+'/directSpotEdges.txt'
 
-#getCityUndirectEdgePairs(cityUndirectEdgeFile)
-#getCityDirectEdgePairs(cityDirectEdgeFile)
+getCityUndirectEdgePairs(cityUndirectEdgeFile)
+getCityDirectEdgePairs(cityDirectEdgeFile)
 getSpotUndirectEdgePairs(spotUndirectEdgeFile)
