@@ -24,7 +24,7 @@ def getCityUndirectEdgePairs(file):
     db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
                          charset=mod_config.dbcharset)
     cursor = db.cursor()
-    fs = codecs.open(file, 'w+',encoding='gbk')
+    fs = codecs.open(file, 'w+',encoding='utf-8')
     try:
         mysql = 'select departure,city from citynote'
         cursor.execute(mysql)
@@ -61,7 +61,7 @@ def getCityDirectEdgePairs(file):
     db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
                          charset=mod_config.dbcharset)
     cursor = db.cursor()
-    fs = codecs.open(file, 'w+',encoding='gbk')
+    fs = codecs.open(file, 'w+',encoding='utf-8')
     try:
         mysql = 'select departure,city from citynote'
         cursor.execute(mysql)
@@ -94,7 +94,7 @@ def getSpotUndirectEdgePairs(file):
     db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, charset=mod_config.dbcharset)#'222.29.117.151', 'root', 'admin', 'pythondb', charset='utf8')
     cursor = db.cursor()
 
-    fs = codecs.open(file, 'w+', encoding='utf8')
+    # fs = codecs.open(file, 'w+', encoding='utf8')
     try:
         mysql = 'select departure,city,spot,url from note'
         cursor.execute(mysql)
@@ -121,21 +121,29 @@ def getSpotUndirectEdgePairs(file):
             else:
                 undirectSpotEdgeMap[pair2] = 1
                 undirectSpotEdgeSet.add(pair2)
-        sum = 0
-        for key, value in undirectCitySpotEdgeMap.items():
-            key2 = key.rfind(',')
-            key = key[0:key2]
-            print key
-            fs.write(key + "," + str(value) + "\r\n")
-            print key, value
-            sum += value
 
-        for key, value in undirectSpotEdgeMap.items():
-            fs.write(key + "," + str(value) + "\r\n")
+            if url not in undirectSpot2SpotEdgeMap.keys():
+                undirectSpot2SpotEdgeMap[url] = []
+            else:
+                undirectSpot2SpotEdgeMap[url].append(spot)
+
+        for key, value in undirectSpot2SpotEdgeMap.items():
             print key, value
-            sum += value
-        fs.flush()
-        fs.close()
+        sum = 0
+        # for key, value in undirectCitySpotEdgeMap.items():
+        #     key2 = key.rfind(',')
+        #     key = key[0:key2]
+        #     print key
+        #     fs.write(key + "," + str(value) + "\r\n")
+        #     print key, value
+        #     sum += value
+        #
+        # for key, value in undirectSpotEdgeMap.items():
+        #     fs.write(key + "," + str(value) + "\r\n")
+        #     print key, value
+        #     sum += value
+        # fs.flush()
+        # fs.close()
         print len(undirectCitySpotEdgeMap), len(undirectSpotEdgeMap), sum
     except Exception, msg:
         print msg
@@ -154,9 +162,13 @@ undirectCitySpotEdgeSet = set()
 undirectCitySpotEdgeMap = {}
 undirectSpotEdgeSet = set()
 undirectSpotEdgeMap = {}
+undirectSpot2SpotEdgeMap = {}
+
 
 directSpotEdgeSet = set()
 directSpotEdgeMap = {}
+
+
 # file = 'errorcityname2.csv'
 # readfile(file)
 
@@ -167,6 +179,6 @@ cityDirectEdgeFile = pwd+'/directCityEdges.txt'
 spotUndirectEdgeFile = pwd+'/undirectSpotEdges.txt'
 spotDirectEdgeFile = pwd+'/directSpotEdges.txt'
 
-getCityUndirectEdgePairs(cityUndirectEdgeFile)
-getCityDirectEdgePairs(cityDirectEdgeFile)
+#getCityUndirectEdgePairs(cityUndirectEdgeFile)
+#getCityDirectEdgePairs(cityDirectEdgeFile)
 getSpotUndirectEdgePairs(spotUndirectEdgeFile)
