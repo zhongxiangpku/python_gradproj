@@ -96,7 +96,7 @@ def getSpotUndirectEdgePairs(file):
 
     # fs = codecs.open(file, 'w+', encoding='utf8')
     try:
-        mysql = 'select departure,city,spot,url from note'
+        mysql = 'select departure,city,spot,url from note '
         cursor.execute(mysql)
         results = cursor.fetchall()
         for row in results:
@@ -106,7 +106,7 @@ def getSpotUndirectEdgePairs(file):
             url = row[3]
             pair1 = departure + "," + destination+","+url
             # departure city -> destination city
-            print pair1
+            # print pair1
             if pair1 in undirectCitySpotEdgeSet:
                 undirectCitySpotEdgeMap[pair1] += 1
             else:
@@ -115,7 +115,7 @@ def getSpotUndirectEdgePairs(file):
 
             # destination city -> destination spot
             pair2 = destination+","+spot
-            print pair2
+            # print pair2
             if pair2 in undirectSpotEdgeSet:
                 undirectSpotEdgeMap[pair2] += 1
             else:
@@ -124,11 +124,19 @@ def getSpotUndirectEdgePairs(file):
 
             if url not in undirectSpot2SpotEdgeMap.keys():
                 undirectSpot2SpotEdgeMap[url] = []
+                undirectSpot2SpotEdgeMap[url].append(spot)
             else:
                 undirectSpot2SpotEdgeMap[url].append(spot)
 
+        index = 1
         for key, value in undirectSpot2SpotEdgeMap.items():
-            print key, value
+            str = ''
+            if len(value)>1:
+                for item in value:
+                    str += item+ ' '
+                    #str.append(item)
+                print index, key, str
+                index += 1
         sum = 0
         # for key, value in undirectCitySpotEdgeMap.items():
         #     key2 = key.rfind(',')
