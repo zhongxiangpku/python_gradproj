@@ -18,6 +18,9 @@ def readfile(file):
     except Exception, e:
         print Exception, ":", e
 
+#city undirect graph edge
+undirectEdgeSet = set()
+undirectEdgeMap = {}
 def getCityUndirectEdgePairs(file):
     # db = MySQLdb.connect('127.0.0.1', 'root', 'admin', 'pythondb', charset="gbk")
     print mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, mod_config.dbcharset
@@ -55,6 +58,9 @@ def getCityUndirectEdgePairs(file):
     finally:
         db.close()
 
+#city direct graph edge
+directEdgeSet = set()
+directEdgeMap = {}
 def getCityDirectEdgePairs(file):
     #db = MySQLdb.connect('127.0.0.1', 'root', 'admin', 'pythondb', charset="gbk")
     print mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, mod_config.dbcharset
@@ -89,14 +95,23 @@ def getCityDirectEdgePairs(file):
     finally:
         db.close()
 
+#spot undirect  graph edge
+#undirectCitySpotEdgeSet = set()
+undirectCitySpotEdgeMap = {}
+
+#undirectSpotEdgeSet = set()
+undirectSpotEdgeMap = {}
+
+undirectSpot2SpotEdgeMapWithWeight = {}
+undirectSpot2SpotEdgeMap = {}
 def getSpotUndirectEdgePairs(file):
     # print mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, mod_config.dbcharset
     db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, charset=mod_config.dbcharset)#'222.29.117.151', 'root', 'admin', 'pythondb', charset='utf8')
     cursor = db.cursor()
 
-    # fs = codecs.open(file, 'w+', encoding='utf8')
+    fs = codecs.open(file, 'w+', encoding='utf8')
     try:
-        mysql = 'select departure,city,spot,url from note '
+        mysql = 'select departure,city,spot,url from note'
         cursor.execute(mysql)
         results = cursor.fetchall()
         for row in results:
@@ -107,70 +122,77 @@ def getSpotUndirectEdgePairs(file):
             pair1 = departure + "," + destination+","+url
             # departure city -> destination city
             # print pair1
-            if pair1 in undirectCitySpotEdgeSet:
+            if pair1 in undirectCitySpotEdgeMap.keys():
                 undirectCitySpotEdgeMap[pair1] += 1
             else:
                 undirectCitySpotEdgeMap[pair1] = 1
-                undirectCitySpotEdgeSet.add(pair1)
+                #undirectCitySpotEdgeSet.add(pair1)
 
             # destination city -> destination spot
             pair2 = destination+","+spot
             # print pair2
-            if pair2 in undirectSpotEdgeSet:
+            if pair2 in undirectSpotEdgeMap.keys():
                 undirectSpotEdgeMap[pair2] += 1
             else:
                 undirectSpotEdgeMap[pair2] = 1
-                undirectSpotEdgeSet.add(pair2)
+                #undirectSpotEdgeSet.add(pair2)
 
             if url not in undirectSpot2SpotEdgeMap.keys():
-                undirectSpot2SpotEdgeMap[url] = []
-                undirectSpot2SpotEdgeMap[url].append(spot)
+                undirectSpot2SpotEdgeMap[url] = set()
+                undirectSpot2SpotEdgeMap[url].add(spot)
             else:
-                undirectSpot2SpotEdgeMap[url].append(spot)
+                undirectSpot2SpotEdgeMap[url].add(spot)
 
-        index = 1
         for key, value in undirectSpot2SpotEdgeMap.items():
-            str = ''
-            if len(value)>1:
-                for item in value:
-                    str += item+ ' '
-                    #str.append(item)
-                print index, key, str
-                index += 1
+            if len(value) > 1:
+                lstValue = list(value)
+                for i in range(0,len(lstValue)):
+                    for j in range(i+1,len(lstValue)):
+                        pair31 = lstValue[i]+ "," +lstValue[j]
+                        pair32 = lstValue[j] + "," + lstValue[i]
+                        #print pair31, pair32
+                        if pair31 in undirectSpot2SpotEdgeMapWithWeight.keys():
+                            undirectSpot2SpotEdgeMapWithWeight[pair31]+=1
+                        elif pair32 in undirectSpot2SpotEdgeMapWithWeight.keys():
+                            undirectSpot2SpotEdgeMapWithWeight[pair32] += 1
+                        else:
+                            undirectSpot2SpotEdgeMapWithWeight[pair31] = 1
+
+        # index = 1
+        # for key, value in undirectSpot2SpotEdgeMapWithWeight.items():
+        #     print index, key, value
+        #     index += 1
+
         sum = 0
-        # for key, value in undirectCitySpotEdgeMap.items():
-        #     key2 = key.rfind(',')
-        #     key = key[0:key2]
-        #     print key
-        #     fs.write(key + "," + str(value) + "\r\n")
-        #     print key, value
-        #     sum += value
-        #
-        # for key, value in undirectSpotEdgeMap.items():
-        #     fs.write(key + "," + str(value) + "\r\n")
-        #     print key, value
-        #     sum += value
-        # fs.flush()
-        # fs.close()
-        print len(undirectCitySpotEdgeMap), len(undirectSpotEdgeMap), sum
+        for key, value in undirectCitySpotEdgeMap.items():
+            key2 = key.rfind(',')
+            key = key[0:key2]
+            #print key
+            fs.write(key + "," + str(value) + "\r\n")
+            print key, value
+            sum += value
+
+        for key, value in undirectSpotEdgeMap.items():
+            fs.write(key + "," + str(value) + "\r\n")
+            print key, value
+            sum += value
+
+        for key, value in undirectSpot2SpotEdgeMapWithWeight.items():
+            fs.write(key + "," + str(value) + "\r\n")
+            print key, value
+            sum += value
+        fs.flush()
+        fs.close()
+        print len(undirectCitySpotEdgeMap) + len(undirectSpotEdgeMap) + len(undirectSpot2SpotEdgeMapWithWeight), sum
     except Exception, msg:
         print msg
     finally:
         db.close()
 
 
-#city graph edge
-undirectEdgeSet = set()
-undirectEdgeMap = {}
-directEdgeSet = set()
-directEdgeMap = {}
 
-#spot graph edge
-undirectCitySpotEdgeSet = set()
-undirectCitySpotEdgeMap = {}
-undirectSpotEdgeSet = set()
-undirectSpotEdgeMap = {}
-undirectSpot2SpotEdgeMap = {}
+
+
 
 
 directSpotEdgeSet = set()
@@ -182,10 +204,10 @@ directSpotEdgeMap = {}
 
 pwd = os.getcwd()
 print pwd
-cityUndirectEdgeFile = pwd+'/undirectCityEdges.txt'
-cityDirectEdgeFile = pwd+'/directCityEdges.txt'
-spotUndirectEdgeFile = pwd+'/undirectSpotEdges.txt'
-spotDirectEdgeFile = pwd+'/directSpotEdges.txt'
+cityUndirectEdgeFile = pwd+'/Datas/undirectCityEdges.txt'
+cityDirectEdgeFile = pwd+'/Datas/directCityEdges.txt'
+spotUndirectEdgeFile = pwd+'/Datas/undirectSpotEdges.txt'
+spotDirectEdgeFile = pwd+'/Datas/directSpotEdges.txt'
 
 #getCityUndirectEdgePairs(cityUndirectEdgeFile)
 #getCityDirectEdgePairs(cityDirectEdgeFile)
