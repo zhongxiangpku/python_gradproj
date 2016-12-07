@@ -206,7 +206,7 @@ def getSpotdirectEdgePairs(file):
 
     fs = codecs.open(file, 'w+', encoding='utf8')
     try:
-        mysql = 'select departure,city,spot,url from note'
+        mysql = 'select departure,city,spot,url from note '
         cursor.execute(mysql)
         results = cursor.fetchall()
         sqlindex = 1
