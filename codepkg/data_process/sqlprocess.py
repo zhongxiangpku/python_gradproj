@@ -309,13 +309,15 @@ def getSpotdirectEdgePairs(file):
 # file = 'errorcityname2.csv'
 # readfile(file)
 
-
 pwd = os.getcwd()
+pwd = os.path.dirname(pwd)
+pwd = os.path.dirname(pwd)
 print pwd
+
 cityUndirectEdgeFile = pwd+'/Datas/undirectCityEdges.txt'
 cityDirectEdgeFile = pwd+'/Datas/directCityEdges.txt'
-spotUndirectEdgeFile = pwd+'\\Datas\\undirectSpotEdges2.txt'
-spotDirectEdgeFile = pwd+'\\Datas\\directSpotEdges2.txt'
+spotUndirectEdgeFile = pwd+'/Datas/undirectSpotEdges2.txt'
+spotDirectEdgeFile = pwd+'/Datas/directSpotEdges2.txt'
 
 # getCityUndirectEdgePairs(cityUndirectEdgeFile)
 # getCityDirectEdgePairs(cityDirectEdgeFile)
