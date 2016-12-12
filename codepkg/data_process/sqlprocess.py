@@ -117,12 +117,16 @@ def getSpotUndirectEdgePairs(file):
         mysql = 'select departure,city,spot,url from note limit 0,10000'
         cursor.execute(mysql)
         results = cursor.fetchall()
+        sqlindex = 1
         for row in results:
             departure = row[0]
             destination = row[1]
             spot = row[1]+row[2]
             url = row[3]
             pair1 = departure + "," + destination+","+url
+
+            print "sqlindex=", sqlindex, url, departure, destination, spot
+            sqlindex += 1
             # departure city -> destination city
             # print pair1
             if pair1 in undirectCitySpotEdgeMap.keys():
@@ -146,9 +150,12 @@ def getSpotUndirectEdgePairs(file):
             else:
                 undirectSpot2SpotEdgeMap[url].add(spot)
 
+        sqlindex = 1
         for key, value in undirectSpot2SpotEdgeMap.items():
             if len(value) > 1:
                 lstValue = list(value)
+                print "sqlindex=", sqlindex, key, lstValue
+                sqlindex += 1
                 for i in range(0,len(lstValue)):
                     for j in range(i+1,len(lstValue)):
                         pair31 = lstValue[i]+ "," +lstValue[j]
