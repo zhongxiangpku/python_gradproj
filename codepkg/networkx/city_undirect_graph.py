@@ -1,13 +1,13 @@
-import Networkx as nx
-from Networkx import *
+import networkx as nx
+from networkx import *
 import os
 import matplotlib.pyplot as plt
 import codecs
 import string
 
 def createNetwork(file):
-    os.chdir('C:\Users\dell\Desktop')
-    fs = codecs.open(file, encoding='gbk')
+    #os.chdir('C:\Users\dell\Desktop')
+    fs = codecs.open(file, encoding='utf-8')
     lines = fs.readlines()
     g = nx.Graph()
     try:
@@ -20,12 +20,16 @@ def createNetwork(file):
         for n, nbrs in g.adjacency_iter():
             for nbr, eattr in nbrs.items():
                 data = eattr['weight']
-                #print('(%s, %s, %.3f)' % (n, nbr, data))
+                print('(%s, %s, %.3f)' % (n, nbr, data))
     except Exception,msg:
         print msg
     return g
 
-undirectCityEdgeFile = 'C:\Users\dell\Desktop\undirectCityEdges.txt'
+pwd = os.getcwd()
+pwd = os.path.dirname(pwd)
+pwd = os.path.dirname(pwd)
+undirectCityEdgeFile = pwd + '\\Datas\\rsa_datas\\undirectCityEdges_rse.txt'
+
 G = createNetwork(undirectCityEdgeFile)
 print len(G.nodes()),len(G.edges())
 print 'average clustering:',nx.average_clustering(G)
@@ -44,7 +48,7 @@ plt.loglog(x,y,color="blue",linewidth=2)
 # nx.draw(G)
 # plt.show()
 
-directCityEdgeFile = 'C:\Users\dell\Desktop\directCityEdges.txt'
+directCityEdgeFile = pwd + '\\Datas\\rsa_datas\\directCityEdges_rse.txt'
 DG = createNetwork(directCityEdgeFile)
 print len(DG.nodes()),len(DG.edges())
 print 'average clustering:',nx.average_clustering(DG)

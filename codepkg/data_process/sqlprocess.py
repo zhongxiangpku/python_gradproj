@@ -114,13 +114,13 @@ def getSpotUndirectEdgePairs(file):
 
     fs = codecs.open(file, 'w+', encoding='utf8')
     try:
-        mysql = 'select departure,city,spot,url from note'
+        mysql = 'select departure,city,spot,url from note limit 0,10000'
         cursor.execute(mysql)
         results = cursor.fetchall()
         for row in results:
             departure = row[0]
             destination = row[1]
-            spot = row[2]
+            spot = row[1]+row[2]
             url = row[3]
             pair1 = departure + "," + destination+","+url
             # departure city -> destination city
@@ -209,14 +209,14 @@ def getSpotdirectEdgePairs(file):
 
     fs = codecs.open(file, 'w+', encoding='utf8')
     try:
-        mysql = 'select departure,city,spot,url from note '
+        mysql = 'select departure,city,spot,url from note limit 0, 10000 '
         cursor.execute(mysql)
         results = cursor.fetchall()
         sqlindex = 1
         for row in results:
             departure = row[0]
             destination = row[1]
-            spot = row[2]
+            spot = row[1] + row[2]
             url = row[3]
             print "sqlindex=", sqlindex, url, departure, destination, spot
             sqlindex += 1
@@ -309,14 +309,15 @@ def getSpotdirectEdgePairs(file):
 # file = 'errorcityname2.csv'
 # readfile(file)
 
+
 pwd = os.getcwd()
 print pwd
 cityUndirectEdgeFile = pwd+'/Datas/undirectCityEdges.txt'
 cityDirectEdgeFile = pwd+'/Datas/directCityEdges.txt'
-spotUndirectEdgeFile = pwd+'/Datas/undirectSpotEdges.txt'
-spotDirectEdgeFile = pwd+'/Datas/directSpotEdges.txt'
+spotUndirectEdgeFile = pwd+'\\Datas\\undirectSpotEdges2.txt'
+spotDirectEdgeFile = pwd+'\\Datas\\directSpotEdges2.txt'
 
 # getCityUndirectEdgePairs(cityUndirectEdgeFile)
 # getCityDirectEdgePairs(cityDirectEdgeFile)
-# getSpotUndirectEdgePairs(spotUndirectEdgeFile)
+getSpotUndirectEdgePairs(spotUndirectEdgeFile)
 getSpotdirectEdgePairs(spotDirectEdgeFile)
