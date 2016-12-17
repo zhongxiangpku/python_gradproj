@@ -124,7 +124,6 @@ def getSpotUndirectEdgePairs(file):
             spot = row[1]+row[2]
             url = row[3]
             pair1 = departure + "," + destination+","+url
-
             print "sqlindex=", sqlindex, url, departure, destination, spot
             sqlindex += 1
             # departure city -> destination city
@@ -216,7 +215,7 @@ def getSpotdirectEdgePairs(file):
 
     fs = codecs.open(file, 'w+', encoding='utf8')
     try:
-        mysql = 'select departure,city,spot,url from note limit '
+        mysql = 'select departure,city,spot,url from note  '
         cursor.execute(mysql)
         results = cursor.fetchall()
         sqlindex = 1
@@ -328,5 +327,5 @@ spotDirectEdgeFile = pwd+'\\Datas\\directSpotEdges2.txt'
 
 # getCityUndirectEdgePairs(cityUndirectEdgeFile)
 # getCityDirectEdgePairs(cityDirectEdgeFile)
-getSpotUndirectEdgePairs(spotUndirectEdgeFile)
+# getSpotUndirectEdgePairs(spotUndirectEdgeFile)
 getSpotdirectEdgePairs(spotDirectEdgeFile)

@@ -36,6 +36,9 @@ print 'average clustering:',nx.average_clustering(G)
 print 'degree_assortativity_coefficient:',nx.degree_assortativity_coefficient(G)
 print 'average_neighbor_degree:',nx.average_neighbor_degree(G)
 print 'average_shortest_path_length',nx.average_shortest_path_length(G)
+KD = nx.all_pairs_node_connectivity(G)
+for key,value in KD.items():
+    print key, value
 
 ERG = nx.random_graphs.erdos_renyi_graph(20,0.2)
 #print 'graph_clique_number',nx.number_of_cliques(G)
