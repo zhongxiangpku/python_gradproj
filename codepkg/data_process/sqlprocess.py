@@ -99,10 +99,7 @@ def getCityDirectEdgePairs(file):
         db.close()
 
 #spot undirect  graph edge
-#undirectCitySpotEdgeSet = set()
 undirectCitySpotEdgeMap = {}
-
-#undirectSpotEdgeSet = set()
 undirectSpotEdgeMap = {}
 
 undirectSpot2SpotEdgeMapWithWeight = {}
@@ -197,11 +194,6 @@ def getSpotUndirectEdgePairs(file):
         print msg
     finally:
         db.close()
-
-
-
-
-
 
 #spot direct  graph edge
 directCitySpotEdgeMap = {}
