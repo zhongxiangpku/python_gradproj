@@ -295,7 +295,7 @@ directSpotEdgeMap = {}
 
 directSpot2SpotEdgeMapWithWeight = {}
 directSpot2SpotEdgeMap = {}
-def getSpotdirectEdgePairs(file):
+def getSpotDirectEdgePairs(file):
     db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname, charset=mod_config.dbcharset)#'222.29.117.151', 'root', 'admin', 'pythondb', charset='utf8')
     cursor = db.cursor()
 
@@ -443,8 +443,8 @@ def getSpotdirectEdgePairs(file):
 
 
 getCoords()
-getCityUndirectEdgePairs(cityUndirectEdgeFile)
-getCityDirectEdgePairs(cityDirectEdgeFile)
+# getCityUndirectEdgePairs(cityUndirectEdgeFile)
+# getCityDirectEdgePairs(cityDirectEdgeFile)
 getSpotUndirectEdgePairs(spotUndirectEdgeFile)
-getCityUndirectEdgePairs(spotDirectEdgeFile)
+getSpotDirectEdgePairs(spotDirectEdgeFile)
 
