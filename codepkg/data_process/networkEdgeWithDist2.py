@@ -9,7 +9,6 @@ import geoutil
 from codepkg import mod_config
 
 MAXROW = 300000
-
 coords = {}
 pwd = os.getcwd()
 pwd = os.path.dirname(pwd)
@@ -168,20 +167,24 @@ def getSpotUndirectEdgePairs(file):
         cursor.execute(mysql)
         results = cursor.fetchall()
         sqlindex = 1
+        undirectCitySpotEdgeMapUrls = set()
         for row in results:
             departure = row[0]
             destination = row[1]
             spot = row[1] + row[2]
             url = row[3]
-            pair1 = departure + "," + destination+","+url
+            pair1 = departure + "," + destination
+            pair11 = departure + "," + destination +","+url
             print "sqlindex=", sqlindex, url, departure, destination, spot
             sqlindex += 1
             # departure city -> destination city
             # print pair1
             if pair1 in undirectCitySpotEdgeMap.keys():
-                undirectCitySpotEdgeMap[pair1] += 1
+                if pair11 not in undirectCitySpotEdgeMapUrls:
+                    undirectCitySpotEdgeMap[pair1] += 1
             else:
                 undirectCitySpotEdgeMap[pair1] = 1
+                undirectCitySpotEdgeMapUrls.add(pair11)
                 #undirectCitySpotEdgeSet.add(pair1)
 
             # destination city -> destination spot
@@ -324,6 +327,7 @@ def getSpotDirectEdgePairs(file):
         cursor.execute(mysql)
         results = cursor.fetchall()
         sqlindex = 1
+        directCitySpotEdgeMapUrls = set()
         for row in results:
             departure = row[0]
             destination = row[1]
@@ -331,14 +335,16 @@ def getSpotDirectEdgePairs(file):
             url = row[3]
             print "sqlindex=", sqlindex, url, departure, destination, spot
             sqlindex += 1
-            pair1 = departure + "," + destination+","+url
+            pair1 = departure + "," + destination
+            pair11 = departure + "," + destination+","+url
             # departure city -> destination city
             # print pair1
             if pair1 in directCitySpotEdgeMap.keys():
-                directCitySpotEdgeMap[pair1] += 1
+                if pair11 not in directCitySpotEdgeMapUrls:
+                    directCitySpotEdgeMap[pair1] += 1
             else:
                 directCitySpotEdgeMap[pair1] = 1
-                #undirectCitySpotEdgeSet.add(pair1)
+                directCitySpotEdgeMapUrls.add(pair11)
 
             # destination city -> destination spot
             pair21 = destination+","+spot

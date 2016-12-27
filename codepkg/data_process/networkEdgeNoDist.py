@@ -118,21 +118,25 @@ def getSpotUndirectEdgePairs(file):
         cursor.execute(mysql)
         results = cursor.fetchall()
         sqlindex = 1
+        undirectCitySpotEdgeMapUrls = set()
         for row in results:
             departure = row[0]
             destination = row[1]
             spot = row[1]+row[2]
             url = row[3]
-            pair1 = departure + "," + destination+","+url
+            pair1 = departure + "," + destination
+            pair11 = departure + "," + destination+","+url
             print "sqlindex=", sqlindex, url, departure, destination, spot
             sqlindex += 1
             # departure city -> destination city
             # print pair1
+
             if pair1 in undirectCitySpotEdgeMap.keys():
-                undirectCitySpotEdgeMap[pair1] += 1
+                if pair11 not in undirectCitySpotEdgeMapUrls:
+                    undirectCitySpotEdgeMap[pair1] += 1
             else:
                 undirectCitySpotEdgeMap[pair1] = 1
-
+                undirectCitySpotEdgeMapUrls.add(pair11)
             # destination city -> destination spot
             pair2 = destination+","+spot
             # print pair2
@@ -238,6 +242,7 @@ def getSpotdirectEdgePairs(file):
         cursor.execute(mysql)
         results = cursor.fetchall()
         sqlindex = 1
+        directCitySpotEdgeMapUrls = set()
         for row in results:
             departure = row[0]
             destination = row[1]
@@ -245,14 +250,16 @@ def getSpotdirectEdgePairs(file):
             url = row[3]
             print "sqlindex=", sqlindex, url, departure, destination, spot
             sqlindex += 1
-            pair1 = departure + "," + destination+","+url
+            pair1 = departure + "," + destination
+            pair11 = departure + "," + destination+","+url
             # departure city -> destination city
             # print pair1
             if pair1 in directCitySpotEdgeMap.keys():
-                directCitySpotEdgeMap[pair1] += 1
+                if pair11 not in directCitySpotEdgeMapUrls:
+                    directCitySpotEdgeMap[pair1] += 1
             else:
                 directCitySpotEdgeMap[pair1] = 1
-                #undirectCitySpotEdgeSet.add(pair1)
+                directCitySpotEdgeMapUrls.add(pair11)
 
             # destination city -> destination spot
             pair21 = destination+","+spot
@@ -276,11 +283,6 @@ def getSpotdirectEdgePairs(file):
                     directSpot2SpotEdgeMap[url][destination].add(spot)
                 else:
                     directSpot2SpotEdgeMap[url][destination].add(spot)
-            # if url not in directSpot2SpotEdgeMap.keys():
-            #     directSpot2SpotEdgeMap[url] = set()
-            #     directSpot2SpotEdgeMap[url].add(spot)
-            # else:
-            #     directSpot2SpotEdgeMap[url].add(spot)
 
         spotindex = 1
         for key, value in directSpot2SpotEdgeMap.items():
@@ -353,7 +355,7 @@ cityDirectEdgeFile = pwd+'\\Datas\\directCityEdges.txt'
 spotUndirectEdgeFile = pwd+'\\Datas\\undirectSpotEdges.txt'
 spotDirectEdgeFile = pwd+'\\Datas\\directSpotEdges.txt'
 
-getCityUndirectEdgePairs(cityUndirectEdgeFile)
-getCityDirectEdgePairs(cityDirectEdgeFile)
-# getSpotUndirectEdgePairs(spotUndirectEdgeFile)
+# getCityUndirectEdgePairs(cityUndirectEdgeFile)
+# getCityDirectEdgePairs(cityDirectEdgeFile)
+getSpotUndirectEdgePairs(spotUndirectEdgeFile)
 # getSpotdirectEdgePairs(spotDirectEdgeFile)

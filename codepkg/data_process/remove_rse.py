@@ -26,6 +26,28 @@ def remove_samenode_file(source, target):
         print Exception, ":", e
 
 
+def remove_dist_samenode_file(source, target):
+    sourcefs = codecs.open(source, encoding='utf-8')
+    targetfs = codecs.open(target, 'w+', encoding='utf-8')
+    lines = sourcefs.readlines()
+    sourcefs.close()
+    try:
+        index = 1
+        print "lines size:", len(lines)
+        for line in lines:
+            print index, line
+            line = line.strip('\r\n')
+            items = string.split(line, ',')
+            if items[0] == items[1]:
+                continue
+
+            targetfs.write(items[0] + "," + items[1] + ", " + items[2] + ", " + items[3]+ ", " + items[4]+ "\r\n")
+            index += 1
+        targetfs.flush()
+        targetfs.close()
+    except Exception, e:
+        print Exception, ":", e
+
 pwd = os.getcwd()
 pwd = os.path.dirname(pwd)
 pwd = os.path.dirname(pwd)
@@ -59,7 +81,7 @@ dist_target_cityDirectEdgeFile = pwd+'/Datas/dist_datas/directCityEdges_dist_rse
 dist_target_spotUndirectEdgeFile = pwd+'/Datas/dist_datas/undirectSpotEdges_dist_rse.txt'
 dist_target_spotDirectEdgeFile = pwd+'/Datas/dist_datas/directSpotEdges_dist_rse.txt'
 
-remove_samenode_file(dist_source_cityUndirectEdgeFile, dist_target_cityUndirectEdgeFile)
-remove_samenode_file(dist_source_cityDirectEdgeFile, dist_target_cityDirectEdgeFile)
-remove_samenode_file(dist_source_spotUndirectEdgeFile, dist_target_spotUndirectEdgeFile)
-remove_samenode_file(dist_source_spotDirectEdgeFile, dist_target_spotDirectEdgeFile)
+remove_dist_samenode_file(dist_source_cityUndirectEdgeFile, dist_target_cityUndirectEdgeFile)
+remove_dist_samenode_file(dist_source_cityDirectEdgeFile, dist_target_cityDirectEdgeFile)
+remove_dist_samenode_file(dist_source_spotUndirectEdgeFile, dist_target_spotUndirectEdgeFile)
+remove_dist_samenode_file(dist_source_spotDirectEdgeFile, dist_target_spotDirectEdgeFile)
