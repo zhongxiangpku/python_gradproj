@@ -6,7 +6,7 @@ Generating a square wordcloud from the US constitution using default arguments.
 """
 
 from os import path
-import wordcloud
+from  wordcloud import WordCloud
 
 d = path.dirname(__file__)
 
@@ -17,7 +17,7 @@ frequencies = [(u'知乎',5),(u'小段同学',4),(u'曲小花',3),(u'中文分�
 
 # Generate a word cloud image 此处原为 text 方法，我们改用 frequencies
 #wordcloud = WordCloud().generate(text)
-wordcloud = wordcloud.WordCloud().fit_words(frequencies)
+wordcloud = WordCloud().fit_words(frequencies)
 
 # Display the generated image:
 # the matplotlib way:
@@ -27,7 +27,7 @@ plt.axis("off")
 
 # take relative word frequencies into account, lower max_font_size
 #wordcloud = WordCloud(max_font_size=40, relative_scaling=.5).generate(text)
-wordcloud = wordcloud.WordCloud(max_font_size=40, relative_scaling=.5).fit_words(frequencies)
+wordcloud = WordCloud(max_font_size=40, relative_scaling=.5).fit_words(frequencies)
 plt.figure()
 plt.imshow(wordcloud)
 plt.axis("off")
