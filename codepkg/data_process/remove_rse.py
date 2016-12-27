@@ -1,6 +1,7 @@
 import os
 import codecs
 import string
+# encoding: UTF-8
 
 def remove_samenode_file(source, target):
     sourcefs = codecs.open(source, encoding='utf-8')
@@ -30,15 +31,15 @@ pwd = os.path.dirname(pwd)
 pwd = os.path.dirname(pwd)
 print pwd
 
-source_cityUndirectEdgeFile = pwd + '/Datas/undirectCityEdges.txt'
-source_cityDirectEdgeFile = pwd+'/Datas/directCityEdges.txt'
-source_spotUndirectEdgeFile = pwd+'/Datas/undirectSpotEdges.txt'
-source_spotDirectEdgeFile = pwd+'/Datas/directSpotEdges.txt'
+source_cityUndirectEdgeFile = pwd + '/Datas/nodist_datas/undirectCityEdges.txt'
+source_cityDirectEdgeFile = pwd+'/Datas/nodist_datas/directCityEdges.txt'
+source_spotUndirectEdgeFile = pwd+'/Datas/nodist_datas/undirectSpotEdges.txt'
+source_spotDirectEdgeFile = pwd+'/Datas/nodist_datas/directSpotEdges.txt'
 
-target_cityUndirectEdgeFile = pwd + '/Datas/undirectCityEdges_rse.txt'
-target_cityDirectEdgeFile = pwd+'/Datas/directCityEdges_rse.txt'
-target_spotUndirectEdgeFile = pwd+'/Datas/undirectSpotEdges_rse.txt'
-target_spotDirectEdgeFile = pwd+'/Datas/directSpotEdges_rse.txt'
+target_cityUndirectEdgeFile = pwd + '/Datas/nodist_datas/undirectCityEdges_rse.txt'
+target_cityDirectEdgeFile = pwd+'/Datas/nodist_datas/directCityEdges_rse.txt'
+target_spotUndirectEdgeFile = pwd+'/Datas/nodist_datas/undirectSpotEdges_rse.txt'
+target_spotDirectEdgeFile = pwd+'/Datas/nodist_datas/directSpotEdges_rse.txt'
 
 remove_samenode_file(source_cityUndirectEdgeFile, target_cityUndirectEdgeFile)
 remove_samenode_file(source_cityDirectEdgeFile, target_cityDirectEdgeFile)

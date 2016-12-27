@@ -1,26 +1,61 @@
 import os
+import codecs
+import string
 
-print os.getcwd()
+# print os.getcwd()
+#
+# pwd = os.getcwd()
+# pwd = pwd + '\\Datas'
+#
+# for i in os.listdir(pwd):
+#     if os.path.isfile(os.path.join(pwd,i)):
+#         print pwd+"\\"+i
+#
+# mymap = {}
+# s= []
+# s.append(1)
+# s.append(2)
+# mymap['url'] = s
+# mymap['url'].append(3)
+# if 'url' in mymap.keys():
+#     print mymap['url']
+# print mymap
+#
+# lst = [1,2,3,4,5]
+# for i in range(0,len(lst)):
+#     for j in range(i+1,len(lst)):
+#         print lst[i], lst[j]
 
-pwd = os.getcwd()
-pwd = pwd + '\\Datas'
 
-for i in os.listdir(pwd):
-    if os.path.isfile(os.path.join(pwd,i)):
-        print pwd+"\\"+i
+# filein = "C:\Users\dell\Desktop\input.txt"
+# fileout = "C:\Users\dell\Desktop\output.txt"
+#
+# def readfile(filein, fileout):
+#     os.chdir('C:\Users\dell\Desktop')
+#     map = {}
+#     fs = codecs.open(filein, encoding='gbk')
+#     fs2 = codecs.open(fileout,'w+', encoding='gbk')
+#     lines = fs.readlines()
+#     fs.close()
+#     try:
+#         for line in lines:
+#             line = line.strip('\r\n')
+#             items = string.split(line, ';')
+#             key = str(items[0])
+#             value = int(items[1])
+#             print key, value
+#             if(key not in map.keys()):
+#                 map[key] = value
+#             else:
+#                 map[key] += value
+#         for key, value in map.items():
+#             fs2.write(key + "," + str(value) + "\r\n")
+#         fs2.close()
+#     except Exception, e:
+#         print Exception, ":", e
+#
+# readfile(filein,fileout)
 
-mymap = {}
-s= []
-s.append(1)
-s.append(2)
-mymap['url'] = s
-mymap['url'].append(3)
-if 'url' in mymap.keys():
-    print mymap['url']
-print mymap
 
-lst = [1,2,3,4,5]
-for i in range(0,len(lst)):
-    for j in range(i+1,len(lst)):
-        print lst[i], lst[j]
+
 

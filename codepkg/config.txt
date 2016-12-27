@@ -1,5 +1,6 @@
 [database]
-dbhost=222.29.117.151
+dbhost=127.0.0.1
+#222.29.117.151
 dbport=3366
 dbuser=root
 dbpassword=admin

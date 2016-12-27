@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# encoding: UTF-8
 
 import os
 import MySQLdb

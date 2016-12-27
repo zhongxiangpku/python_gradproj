@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 import codecs
 import string
 
-def createNetwork(file):
+def createNetwork(gname, file):
     #os.chdir('C:\Users\dell\Desktop')
     fs = codecs.open(file, encoding='utf-8')
     lines = fs.readlines()
-    g = nx.Graph()
+    g = nx.Graph(name = gname)
     try:
         for line in lines:
             line = line.strip('\r\n')
@@ -47,74 +47,43 @@ def createDistNetwork(file):
     return g
 
 def computeBasicIndex(graph):
-    print 'Graph name =',graph.name,graph
+    print 'Graph name =',graph.name
     print '|V|=',len(graph.nodes())
     print '|E|=',len(graph.edges())
-    #print '<k>=',
-    print 'average clustering:', nx.average_clustering(graph)
-    print 'degree_assortativity_coefficient:', nx.degree_assortativity_coefficient(graph)
-    print 'average_neighbor_degree:', nx.average_neighbor_degree(graph)
-    print 'average_shortest_path_length', nx.average_shortest_path_length(graph)
+    print '<k>=',len(graph.edges()) *1.0 / len(graph.nodes())
+    # print 'average clustering:', nx.average_clustering(graph)
+    # print 'degree_assortativity_coefficient:', nx.degree_assortativity_coefficient(graph)
+    # print 'average_neighbor_degree:', nx.average_neighbor_degree(graph)
+    # print 'average_shortest_path_length', nx.average_shortest_path_length(graph)
 
 pwd = os.getcwd()
 pwd = os.path.dirname(pwd)
 pwd = os.path.dirname(pwd)
 #不考虑地理距离建网络
-undirectCityEdgeFile = pwd + '\\Datas\\rsa_datas\\undirectCityEdges_rse.txt'
-directCityEdgeFile = pwd + '\\Datas\\rsa_datas\\directCityEdges_rse.txt'
-undirectSpotEdgeFile = pwd + '\\Datas\\rsa_datas\\undirectSpotEdges_rse.txt'
-directSpotEdgeFile = pwd + '\\Datas\\rsa_datas\\directSpotEdges_rse.txt'
-# undirect_city_network = createNetwork(undirectCityEdgeFile)
-# direct_city_network = createNetwork(directCityEdgeFile)
-# undirect_spot_network = createNetwork(undirectSpotEdgeFile)
-# direct_spot_network = createNetwork(directSpotEdgeFile)
-# computeBasicIndex(undirect_city_network)
-# computeBasicIndex(direct_city_network)
-# computeBasicIndex(undirect_spot_network)
-# computeBasicIndex(direct_spot_network)
+undirectCityEdgeFile = pwd + '\\Datas\\nodist_datas\\undirectCityEdges_rse.txt'
+directCityEdgeFile = pwd + '\\Datas\\nodist_datas\\directCityEdges_rse.txt'
+undirectSpotEdgeFile = pwd + '\\Datas\\nodist_datas\\undirectSpotEdges_rse.txt'
+directSpotEdgeFile = pwd + '\\Datas\\nodist_datas\\directSpotEdges_rse.txt'
+undirect_city_network = createNetwork('非地理无向城市网络', undirectCityEdgeFile)
+direct_city_network = createNetwork('非地理有向城市网络',directCityEdgeFile)
+undirect_spot_network = createNetwork('非地理无向景点网络',undirectSpotEdgeFile)
+direct_spot_network = createNetwork('非地理有向景点网络',directSpotEdgeFile)
+computeBasicIndex(undirect_city_network)
+computeBasicIndex(direct_city_network)
+computeBasicIndex(undirect_spot_network)
+computeBasicIndex(direct_spot_network)
 
 #考虑地理距离作为边权建网络
 undirectCityDistEdgeFile = pwd + '\\Datas\\dist_datas\\undirectCityEdges_dist_rse.txt'
 directCityDistEdgeFile = pwd + '\\Datas\\dist_datas\\directCityEdges_dist_rse.txt'
 undirectSpotDistEdgeFile = pwd + '\\Datas\\dist_datas\\undirectSpotEdges_dist_rse.txt'
 directSpotDistEdgeFile = pwd + '\\Datas\\dist_datas\\directSpotEdges_dist_rse.txt'
-undirect_city_dist_network = createNetwork(undirectCityDistEdgeFile)
-direct_city_dist_network = createNetwork(directCityDistEdgeFile)
-undirect_spot_dist_network = createNetwork(undirectSpotDistEdgeFile)
-direct_spot_dist_network = createNetwork(directSpotDistEdgeFile)
+# undirect_city_dist_network = createNetwork('地理无向城市网络',undirectCityDistEdgeFile)
+# direct_city_dist_network = createNetwork('地理有向城市网络',directCityDistEdgeFile)
+# undirect_spot_dist_network = createNetwork('地理无向景点网络',undirectSpotDistEdgeFile)
+# direct_spot_dist_network = createNetwork('地理有向景点网络',directSpotDistEdgeFile)
 # computeBasicIndex(undirect_city_dist_network)
 # computeBasicIndex(direct_city_dist_network)
-computeBasicIndex(undirect_spot_dist_network)
+# computeBasicIndex(undirect_spot_dist_network)
 # computeBasicIndex(direct_spot_dist_network)
 
-# G = createNetwork(undirectCityEdgeFile)
-# print len(G.nodes()),len(G.edges())
-# print 'average clustering:',nx.average_clustering(G)
-# print 'degree_assortativity_coefficient:',nx.degree_assortativity_coefficient(G)
-# print 'average_neighbor_degree:',nx.average_neighbor_degree(G)
-# print 'average_shortest_path_length',nx.average_shortest_path_length(G)
-# KD = nx.all_pairs_node_connectivity(G)
-# for key,value in KD.items():
-#     print key, value
-#
-# ERG = nx.random_graphs.erdos_renyi_graph(20,0.2)
-# #print 'graph_clique_number',nx.number_of_cliques(G)
-# degree =  nx.degree_histogram(G)
-# x = range(len(degree))
-# y = [z / float(sum(degree)) for z in degree]
-# plt.loglog(x,y,color="blue",linewidth=2)
-# #plt.show()
-#
-# # nx.draw(G)
-# # plt.show()
-#
-# directCityEdgeFile = pwd + '\\Datas\\rsa_datas\\directCityEdges_rse.txt'
-# DG = createNetwork(directCityEdgeFile)
-# print len(DG.nodes()),len(DG.edges())
-# print 'average clustering:',nx.average_clustering(DG)
-# print 'degree_assortativity_coefficient:',nx.degree_assortativity_coefficient(DG)
-# print 'average_neighbor_degree:',nx.average_neighbor_degree(DG)
-# print 'average_shortest_path_length',nx.average_shortest_path_length(DG)
-# #print 'graph_clique_number',nx.number_of_cliques(DG)
-# # nx.draw(DG)
-# # plt.show()

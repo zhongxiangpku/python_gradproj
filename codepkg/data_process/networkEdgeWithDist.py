@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 import codecs
 import os
 import string
@@ -6,6 +8,7 @@ import geoutil
 
 from codepkg import mod_config
 
+MAXROW = 300000
 coords = {}
 pwd = os.getcwd()
 pwd = os.path.dirname(pwd)
@@ -160,7 +163,7 @@ def getSpotUndirectEdgePairs(file):
 
     fs = codecs.open(file, 'w+', encoding='utf8')
     try:
-        mysql = 'select departure,city,spot,url from note'
+        mysql = 'select departure,city,spot,url from note limit 0,'+ str(MAXROW)
         cursor.execute(mysql)
         results = cursor.fetchall()
         sqlindex = 1
@@ -189,29 +192,44 @@ def getSpotUndirectEdgePairs(file):
                 undirectSpotEdgeMap[pair2] = 1
                 #undirectSpotEdgeSet.add(pair2)
 
+            # if url not in undirectSpot2SpotEdgeMap.keys():
+            #     undirectSpot2SpotEdgeMap[url] = set()
+            #     undirectSpot2SpotEdgeMap[url].add(spot)
+            # else:
+            #     undirectSpot2SpotEdgeMap[url].add(spot)
             if url not in undirectSpot2SpotEdgeMap.keys():
-                undirectSpot2SpotEdgeMap[url] = set()
-                undirectSpot2SpotEdgeMap[url].add(spot)
+                undirectSpot2SpotEdgeMap[url] = {}
+                if destination not in undirectSpot2SpotEdgeMap[url].keys():
+                    undirectSpot2SpotEdgeMap[url][destination] = set()
+                    undirectSpot2SpotEdgeMap[url][destination].add(spot)
             else:
-                undirectSpot2SpotEdgeMap[url].add(spot)
+                if destination not in undirectSpot2SpotEdgeMap[url].keys():
+                    undirectSpot2SpotEdgeMap[url][destination] = set()
+                    undirectSpot2SpotEdgeMap[url][destination].add(spot)
+                else:
+                    undirectSpot2SpotEdgeMap[url][destination].add(spot)
 
-        sqlindex = 1
+        spotindex = 1
         for key, value in undirectSpot2SpotEdgeMap.items():
-            if len(value) > 1:
-                lstValue = list(value)
-                print "sqlindex=", sqlindex, key, lstValue
-                sqlindex += 1
-                for i in range(0,len(lstValue)):
-                    for j in range(i+1,len(lstValue)):
-                        pair31 = lstValue[i]+ "," +lstValue[j]
-                        pair32 = lstValue[j] + "," + lstValue[i]
-                        #print pair31, pair32
-                        if pair31 in undirectSpot2SpotEdgeMapWithWeight.keys():
-                            undirectSpot2SpotEdgeMapWithWeight[pair31]+=1
-                        elif pair32 in undirectSpot2SpotEdgeMapWithWeight.keys():
-                            undirectSpot2SpotEdgeMapWithWeight[pair32] += 1
-                        else:
-                            undirectSpot2SpotEdgeMapWithWeight[pair31] = 1
+            spotSet = ()
+            spotKey = ''
+            for (k, v) in value.items():
+                spotKey = k
+                spotSet = v
+            lstValue = list(spotSet)
+            print "spotindex=", spotindex, key, spotKey
+            spotindex += 1
+            for i in range(0,len(lstValue)):
+                for j in range(i+1,len(lstValue)):
+                    pair31 = lstValue[i]+ "," +lstValue[j]
+                    pair32 = lstValue[j] + "," + lstValue[i]
+                    #print pair31, pair32
+                    if pair31 in undirectSpot2SpotEdgeMapWithWeight.keys():
+                        undirectSpot2SpotEdgeMapWithWeight[pair31]+=1
+                    elif pair32 in undirectSpot2SpotEdgeMapWithWeight.keys():
+                        undirectSpot2SpotEdgeMapWithWeight[pair32] += 1
+                    else:
+                        undirectSpot2SpotEdgeMapWithWeight[pair31] = 1
 
         sum = 0
         for key, value in undirectCitySpotEdgeMap.items():
@@ -301,7 +319,7 @@ def getSpotDirectEdgePairs(file):
 
     fs = codecs.open(file, 'w+', encoding='utf8')
     try:
-        mysql = 'select departure,city,spot,url from note  '
+        mysql = 'select departure,city,spot,url from note limit 0,'+ str(MAXROW)
         cursor.execute(mysql)
         results = cursor.fetchall()
         sqlindex = 1
@@ -333,31 +351,41 @@ def getSpotDirectEdgePairs(file):
                 directSpotEdgeMap[pair22] = 1
 
             if url not in directSpot2SpotEdgeMap.keys():
-                directSpot2SpotEdgeMap[url] = set()
-                directSpot2SpotEdgeMap[url].add(spot)
+                directSpot2SpotEdgeMap[url] = {}
+                if destination not in directSpot2SpotEdgeMap[url].keys():
+                    directSpot2SpotEdgeMap[url][destination] = set()
+                    directSpot2SpotEdgeMap[url][destination].add(spot)
             else:
-                directSpot2SpotEdgeMap[url].add(spot)
+                if destination not in directSpot2SpotEdgeMap[url].keys():
+                    directSpot2SpotEdgeMap[url][destination] = set()
+                    directSpot2SpotEdgeMap[url][destination].add(spot)
+                else:
+                    directSpot2SpotEdgeMap[url][destination].add(spot)
 
         spotindex = 1
         for key, value in directSpot2SpotEdgeMap.items():
-            print 'spotindex=', spotindex, key
+            spotSet = ()
+            spotKey = ''
+            for (k, v) in value.items():
+                spotKey = k
+                spotSet = v
+            lstValue = list(spotSet)
+            print "spotindex=", spotindex, key, spotKey
             spotindex += 1
-            if len(value) > 1:
-                lstValue = list(value)
-                for i in range(0, len(lstValue)):
-                    for j in range(i+1, len(lstValue)):
-                        pair31 = lstValue[i] + "," +lstValue[j]
-                        pair32 = lstValue[j] + "," + lstValue[i]
-                        #print pair31, pair32
-                        if pair31 in directSpot2SpotEdgeMapWithWeight.keys():
-                            directSpot2SpotEdgeMapWithWeight[pair31]+=1
-                            directSpot2SpotEdgeMapWithWeight[pair32] += 1
-                        elif pair32 in directSpot2SpotEdgeMapWithWeight.keys():
-                            directSpot2SpotEdgeMapWithWeight[pair31] += 1
-                            directSpot2SpotEdgeMapWithWeight[pair32] += 1
-                        else:
-                            directSpot2SpotEdgeMapWithWeight[pair31] = 1
-                            directSpot2SpotEdgeMapWithWeight[pair32] = 1
+            for i in range(0, len(lstValue)):
+                for j in range(i+1, len(lstValue)):
+                    pair31 = lstValue[i] + "," +lstValue[j]
+                    pair32 = lstValue[j] + "," + lstValue[i]
+                    #print pair31, pair32
+                    if pair31 in directSpot2SpotEdgeMapWithWeight.keys():
+                        directSpot2SpotEdgeMapWithWeight[pair31]+=1
+                        directSpot2SpotEdgeMapWithWeight[pair32] += 1
+                    elif pair32 in directSpot2SpotEdgeMapWithWeight.keys():
+                        directSpot2SpotEdgeMapWithWeight[pair31] += 1
+                        directSpot2SpotEdgeMapWithWeight[pair32] += 1
+                    else:
+                        directSpot2SpotEdgeMapWithWeight[pair31] = 1
+                        directSpot2SpotEdgeMapWithWeight[pair32] = 1
 
 
         dataindex = 1
@@ -443,8 +471,8 @@ def getSpotDirectEdgePairs(file):
 
 
 getCoords()
-# getCityUndirectEdgePairs(cityUndirectEdgeFile)
-# getCityDirectEdgePairs(cityDirectEdgeFile)
-getSpotUndirectEdgePairs(spotUndirectEdgeFile)
-getSpotDirectEdgePairs(spotDirectEdgeFile)
+getCityUndirectEdgePairs(cityUndirectEdgeFile)
+getCityDirectEdgePairs(cityDirectEdgeFile)
+# getSpotUndirectEdgePairs(spotUndirectEdgeFile)
+# getSpotDirectEdgePairs(spotDirectEdgeFile)
 
