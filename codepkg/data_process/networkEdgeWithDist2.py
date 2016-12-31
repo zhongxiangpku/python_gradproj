@@ -237,8 +237,8 @@ def getSpotUndirectEdgePairs(file):
 
         sum = 0
         for key, value in undirectCitySpotEdgeMap.items():
-            key2 = key.rfind(',')
-            key = key[0:key2]
+            # key2 = key.rfind(',')
+            # key = key[0:key2]
             pairs = key.strip('\r\n')
             items = string.split(pairs, ',')
             toponym1 = coords[items[0]]
@@ -400,8 +400,8 @@ def getSpotDirectEdgePairs(file):
         for key, value in directCitySpotEdgeMap.items():
             print 'dataindex=', dataindex, key, value
             dataindex += 1
-            key2 = key.rfind(',')
-            key = key[0:key2]
+            # key2 = key.rfind(',')
+            # key = key[0:key2]
             pairs = key.strip('\r\n')
             items = string.split(pairs, ',')
             toponym1 = coords[items[0]]

@@ -202,9 +202,9 @@ def getSpotUndirectEdgePairs(file):
 
         sum = 0
         for key, value in undirectCitySpotEdgeMap.items():
-            key2 = key.rfind(',')
-            key = key[0:key2]
-            #print key
+            # key2 = key.rfind(',')
+            # key = key[0:key2]
+            # print key
             fs.write(key + "," + str(value) + "\r\n")
             print key, value
             sum += value
@@ -314,8 +314,8 @@ def getSpotdirectEdgePairs(file):
         for key, value in directCitySpotEdgeMap.items():
             print 'dataindex=', dataindex, key, value
             dataindex += 1
-            key2 = key.rfind(',')
-            key = key[0:key2]
+            # key2 = key.rfind(',')
+            # key = key[0:key2]
             #print key
             fs.write(key + "," + str(value) + "\r\n")
             # print key, value
