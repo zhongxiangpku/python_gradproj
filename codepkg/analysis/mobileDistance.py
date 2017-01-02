@@ -4,7 +4,7 @@ import codecs
 import os
 import string
 import MySQLdb
-import geoutil
+import codepkg.data_process.geoutil
 
 from codepkg import mod_config
 
@@ -62,7 +62,7 @@ def getCityUndirectEdgePairs(file):
             lng1 = toponym1['lng']
             lat2 = toponym2['lat']
             lng2 = toponym2['lng']
-            distance = geoutil.getPointDistance(lat1, lng1, lat2, lng2)
+            distance = codepkg.data_process.geoutil.getPointDistance(lat1, lng1, lat2, lng2)
             print departure, destination, distance
             if departure not in fromToMap.keys():
                 fromToMap[departure] = {}
@@ -108,7 +108,7 @@ def getConnectionCountAndDistance(file):
             lng1 = toponym1['lng']
             lat2 = toponym2['lat']
             lng2 = toponym2['lng']
-            distance = geoutil.getPointDistance(lat1, lng1, lat2, lng2)
+            distance = codepkg.data_process.geoutil.getPointDistance(lat1, lng1, lat2, lng2)
             print departure, destination, distance
             if departure not in fromToMap.keys():
                 fromToMap[departure] = {}

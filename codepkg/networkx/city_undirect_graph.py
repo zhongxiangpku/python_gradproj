@@ -15,7 +15,7 @@ def createNetwork(gname, directed,  file):
     if directed:
         g = nx.DiGraph()
     else:
-        g = nx.Graph(name = gname)
+        g = nx.Graph(name=gname)
     try:
         for line in lines:
             line = line.strip('\r\n')
@@ -38,7 +38,7 @@ def createDistNetwork(gname, directed, file):
     if directed:
         g = nx.DiGraph()
     else:
-        g = nx.Graph(name = gname)
+        g = nx.Graph(name=gname)
     try:
         for line in lines:
             line = line.strip('\r\n')
@@ -68,18 +68,18 @@ def computeBasicIndex(graph):
     print '|E|=', len(graph.edges())
     print '<k>=', len(graph.edges()) *1.0 / len(graph.nodes())
 
-
-    if nx.is_directed():
-        un_graph = graph.to_directed()
-    print 'graph clusting:', nx.clustering(graph)
     randomGraph = nx.dense_gnm_random_graph(nodes, edges)
     print 'average_shortest_path_length', nx.average_shortest_path_length(graph)
     print '随机网络average_shortest_path_length of random graph with same node number and edge number', nx.average_shortest_path_length(randomGraph)
-    if nx.is_directed():
-        un_graph = graph.to_directed()
+    if nx.is_directed(graph):
+        un_digraph = graph.to_undirected()
+        print 'average clustering:', nx.average_clustering(un_digraph)
+        un_randomdiGraph = randomGraph.to_undirected()
+        print '随机网络average clustering of random graph with same node number and edge number :', nx.average_clustering(
+            randomGraph)
+    else:
         print 'average clustering:', nx.average_clustering(graph)
-    #print 'average clustering:', nx.average_clustering(graph)
-    #print '随机网络average clustering of random graph with same node number and edge number :', nx.average_clustering(randomGraph)
+        print '随机网络average clustering of random graph with same node number and edge number :', nx.average_clustering(randomGraph)
     print 'degree_assortativity_coefficient:', nx.degree_assortativity_coefficient(graph)
     # print 'average_neighbor_degree:', nx.average_neighbor_degree(graph)
     print '---------------------------------------------------'

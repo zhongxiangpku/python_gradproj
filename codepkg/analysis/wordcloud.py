@@ -6,11 +6,8 @@ Generating a square wordcloud from the US constitution using default arguments.
 """
 
 from os import path
-<<<<<<< HEAD
 from wordcloud import WordCloud
-=======
 from  wordcloud import WordCloud
->>>>>>> d24e7fef4d1bcf5e549b21b2b9ef5f3fe14040a9
 
 d = path.dirname(__file__)
 
