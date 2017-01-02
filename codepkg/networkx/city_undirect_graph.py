@@ -8,11 +8,14 @@ import codecs
 import string
 
 #根据边文件构建不带地理距离加权的网络（城市－景点，有向－无向）
-def createNetwork(gname, file):
+def createNetwork(gname, directed,  file):
     #os.chdir('C:\Users\dell\Desktop')
     fs = codecs.open(file, encoding='utf-8')
     lines = fs.readlines()
-    g = nx.Graph(name = gname)
+    if directed:
+        g = nx.DiGraph()
+    else:
+        g = nx.Graph(name = gname)
     try:
         for line in lines:
             line = line.strip('\r\n')
@@ -29,10 +32,13 @@ def createNetwork(gname, file):
     return g
 
 #根据边文件构建带地理距离加权的网络（城市－景点，有向－无向）
-def createDistNetwork(gname, file):
+def createDistNetwork(gname, directed, file):
     fs = codecs.open(file, encoding='utf-8')
     lines = fs.readlines()
-    g = nx.Graph(name = gname)
+    if directed:
+        g = nx.DiGraph()
+    else:
+        g = nx.Graph(name = gname)
     try:
         for line in lines:
             line = line.strip('\r\n')
@@ -62,11 +68,18 @@ def computeBasicIndex(graph):
     print '|E|=', len(graph.edges())
     print '<k>=', len(graph.edges()) *1.0 / len(graph.nodes())
 
+
+    if nx.is_directed():
+        un_graph = graph.to_directed()
+    print 'graph clusting:', nx.clustering(graph)
     randomGraph = nx.dense_gnm_random_graph(nodes, edges)
     print 'average_shortest_path_length', nx.average_shortest_path_length(graph)
     print '随机网络average_shortest_path_length of random graph with same node number and edge number', nx.average_shortest_path_length(randomGraph)
-    print 'average clustering:', nx.average_clustering(graph)
-    print '随机网络average clustering of random graph with same node number and edge number :', nx.average_clustering(randomGraph)
+    if nx.is_directed():
+        un_graph = graph.to_directed()
+        print 'average clustering:', nx.average_clustering(graph)
+    #print 'average clustering:', nx.average_clustering(graph)
+    #print '随机网络average clustering of random graph with same node number and edge number :', nx.average_clustering(randomGraph)
     print 'degree_assortativity_coefficient:', nx.degree_assortativity_coefficient(graph)
     # print 'average_neighbor_degree:', nx.average_neighbor_degree(graph)
     print '---------------------------------------------------'
@@ -142,14 +155,14 @@ undirectCityEdgeFile = pwd + '/Datas/Edge_datas/undirectCityEdges_rse.txt'
 directCityEdgeFile = pwd + '/Datas/Edge_datas/directCityEdges_rse.txt'
 undirectSpotEdgeFile = pwd + '/Datas/Edge_datas/undirectSpotEdges_rse.txt'
 directSpotEdgeFile = pwd + '/Datas/Edge_datas/directSpotEdges_rse.txt'
-undirect_city_network = createNetwork('非地理无向城市网络', undirectCityEdgeFile)
-# direct_city_network = createNetwork('非地理有向城市网络',directCityEdgeFile)
-# undirect_spot_network = createNetwork('非地理无向景点网络',undirectSpotEdgeFile)
-# direct_spot_network = createNetwork('非地理有向景点网络',directSpotEdgeFile)
+undirect_city_network = createNetwork('非地理无向城市网络', False, undirectCityEdgeFile)
+direct_city_network = createNetwork('非地理有向城市网络', True, directCityEdgeFile)
+undirect_spot_network = createNetwork('非地理无向景点网络', False, undirectSpotEdgeFile)
+direct_spot_network = createNetwork('非地理有向景点网络',True, directSpotEdgeFile)
 computeBasicIndex(undirect_city_network)
-# computeBasicIndex(direct_city_network)
-# computeBasicIndex(undirect_spot_network)
-# computeBasicIndex(direct_spot_network)
+computeBasicIndex(direct_city_network)
+computeBasicIndex(undirect_spot_network)
+computeBasicIndex(direct_spot_network)
 
 #计算中心性
 # node_degree_centrality_file= pwd +'/Datas/Centrality_datas/cityUndirectEdge_nodeDegreeCentralityFile.txt'
@@ -181,16 +194,16 @@ computeBasicIndex(undirect_city_network)
 
 
 #考虑地理距离作为边权建网络
-# undirectCityDistEdgeFile = pwd + '/Datas/Edge_datas/undirectCityEdges_dist_rse.txt'
-# directCityDistEdgeFile = pwd + '/Datas/Edge_datas/directCityEdges_dist_rse.txt'
-# undirectSpotDistEdgeFile = pwd + '/Datas/Edge_datas/undirectSpotEdges_dist_rse.txt'
-# directSpotDistEdgeFile = pwd + '/Datas/Edge_datas/directSpotEdges_dist_rse.txt'
-# undirect_city_dist_network = createNetwork('地理无向城市网络',undirectCityDistEdgeFile)
-# direct_city_dist_network = createNetwork('地理有向城市网络',directCityDistEdgeFile)
-# undirect_spot_dist_network = createNetwork('地理无向景点网络',undirectSpotDistEdgeFile)
-# direct_spot_dist_network = createNetwork('地理有向景点网络',directSpotDistEdgeFile)
-# computeBasicIndex(undirect_city_dist_network)
-# computeBasicIndex(direct_city_dist_network)
-# computeBasicIndex(undirect_spot_dist_network)
-# computeBasicIndex(direct_spot_dist_network)
+undirectCityDistEdgeFile = pwd + '/Datas/Edge_datas/undirectCityEdges_dist_rse.txt'
+directCityDistEdgeFile = pwd + '/Datas/Edge_datas/directCityEdges_dist_rse.txt'
+undirectSpotDistEdgeFile = pwd + '/Datas/Edge_datas/undirectSpotEdges_dist_rse.txt'
+directSpotDistEdgeFile = pwd + '/Datas/Edge_datas/directSpotEdges_dist_rse.txt'
+undirect_city_dist_network = createNetwork('地理无向城市网络', False, undirectCityDistEdgeFile)
+direct_city_dist_network = createNetwork('地理有向城市网络', True, directCityDistEdgeFile)
+undirect_spot_dist_network = createNetwork('地理无向景点网络', False, undirectSpotDistEdgeFile)
+direct_spot_dist_network = createNetwork('地理有向景点网络', True, directSpotDistEdgeFile)
+computeBasicIndex(undirect_city_dist_network)
+computeBasicIndex(direct_city_dist_network)
+computeBasicIndex(undirect_spot_dist_network)
+computeBasicIndex(direct_spot_dist_network)
 
