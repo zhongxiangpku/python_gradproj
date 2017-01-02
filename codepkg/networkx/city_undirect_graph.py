@@ -77,7 +77,6 @@ def computeBasicIndex(graph):
     print '随机网络average_shortest_path_length of random graph with same node number and edge number', nx.average_shortest_path_length(randomGraph)
     if nx.is_directed():
         un_graph = graph.to_directed()
-        print 'average clustering:', nx.average_clustering(graph)
     #print 'average clustering:', nx.average_clustering(graph)
     #print '随机网络average clustering of random graph with same node number and edge number :', nx.average_clustering(randomGraph)
     print 'degree_assortativity_coefficient:', nx.degree_assortativity_coefficient(graph)
