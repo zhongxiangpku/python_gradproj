@@ -63,10 +63,10 @@ target_cityDirectEdgeFile = pwd+'/Datas/nodist_datas/directCityEdges_rse.txt'
 target_spotUndirectEdgeFile = pwd+'/Datas/nodist_datas/undirectSpotEdges_rse.txt'
 target_spotDirectEdgeFile = pwd+'/Datas/nodist_datas/directSpotEdges_rse.txt'
 
-remove_samenode_file(source_cityUndirectEdgeFile, target_cityUndirectEdgeFile)
-remove_samenode_file(source_cityDirectEdgeFile, target_cityDirectEdgeFile)
-remove_samenode_file(source_spotUndirectEdgeFile, target_spotUndirectEdgeFile)
-remove_samenode_file(source_spotDirectEdgeFile, target_spotDirectEdgeFile)
+# remove_samenode_file(source_cityUndirectEdgeFile, target_cityUndirectEdgeFile)
+# remove_samenode_file(source_cityDirectEdgeFile, target_cityDirectEdgeFile)
+# remove_samenode_file(source_spotUndirectEdgeFile, target_spotUndirectEdgeFile)
+# remove_samenode_file(source_spotDirectEdgeFile, target_spotDirectEdgeFile)
 
 
 
@@ -81,7 +81,7 @@ dist_target_cityDirectEdgeFile = pwd+'/Datas/dist_datas/directCityEdges_dist_rse
 dist_target_spotUndirectEdgeFile = pwd+'/Datas/dist_datas/undirectSpotEdges_dist_rse.txt'
 dist_target_spotDirectEdgeFile = pwd+'/Datas/dist_datas/directSpotEdges_dist_rse.txt'
 
-remove_dist_samenode_file(dist_source_cityUndirectEdgeFile, dist_target_cityUndirectEdgeFile)
-remove_dist_samenode_file(dist_source_cityDirectEdgeFile, dist_target_cityDirectEdgeFile)
-remove_dist_samenode_file(dist_source_spotUndirectEdgeFile, dist_target_spotUndirectEdgeFile)
+# remove_dist_samenode_file(dist_source_cityUndirectEdgeFile, dist_target_cityUndirectEdgeFile)
+# remove_dist_samenode_file(dist_source_cityDirectEdgeFile, dist_target_cityDirectEdgeFile)
+# remove_dist_samenode_file(dist_source_spotUndirectEdgeFile, dist_target_spotUndirectEdgeFile)
 remove_dist_samenode_file(dist_source_spotDirectEdgeFile, dist_target_spotDirectEdgeFile)

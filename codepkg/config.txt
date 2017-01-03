@@ -4,7 +4,7 @@ dbhost=127.0.0.1
 dbport=3366
 dbuser=root
 dbpassword=admin
-dbname=python
+dbname=pythondb
 dbcharset=utf8
 
 [robotconfig]

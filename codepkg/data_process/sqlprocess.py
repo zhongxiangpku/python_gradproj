@@ -75,9 +75,9 @@ def storeIntoDB(file):
     fname = os.path.basename(file)
     suffix = fname.rfind('.')
     fname = fname[0:suffix]
-    db = MySQLdb.connect('127.0.0.1', 'root', 'admin', 'python', charset="utf8")
-    # db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
-    #                      charset='utf8')
+    #db = MySQLdb.connect('127.0.0.1', 'root', 'admin', 'python', charset="utf8")
+    db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
+                         charset='utf8')
 
     cursor = db.cursor()
 
@@ -93,11 +93,10 @@ def storeIntoDB(file):
                 print mysql
                 cursor.execute(mysql,items)
             elif len(items) == 5:
-                print items[0], items[1], items[2], items[3], items[4]
-                mysql = 'insert into ' + fname + '(source,target,frequency,distance,weight) values (%s,%s,%s,%s)' % \
-                                                 (items[0], items[1], items[2], items[3],items[4])
+                print items[0], items[1], str(items[2]), str(items[3]), str(items[4])
+                mysql = 'insert into ' + map[fname] + '(source,target,frequency,distance,weight) values (%s,%s,%s,%s,%s)'
                 print mysql
-                cursor.execute(mysql)
+                cursor.execute(mysql,items)
         db.commit()
     except Exception, msg:
         print msg
@@ -106,4 +105,11 @@ def storeIntoDB(file):
 
 
 mapFileToDB()
-storeIntoDB(undirectCityEdgeFile)
+# storeIntoDB(undirectCityEdgeFile)
+# storeIntoDB(directCityEdgeFile)
+# storeIntoDB(undirectSpotEdgeFile)
+# storeIntoDB(directSpotEdgeFile)
+storeIntoDB(undirectCityDistEdgeFile)
+storeIntoDB(directCityDistEdgeFile)
+storeIntoDB(undirectSpotDistEdgeFile)
+storeIntoDB(directSpotDistEdgeFile)

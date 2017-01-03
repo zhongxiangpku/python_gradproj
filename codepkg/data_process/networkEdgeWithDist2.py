@@ -444,7 +444,7 @@ def getSpotDirectEdgePairs(file):
                     weight = value / distance
                 print items[0], toponym1, items[1], toponym2, distance
                 fs.write(key + "," + str(value) + "," + str(distance) + "," + str(weight) + "\r\n")
-            fs.write(key + "," + str(value) + "\r\n")
+            # fs.write(key + "," + str(value) + "\r\n")
             # print key, value
             sum += value
 
