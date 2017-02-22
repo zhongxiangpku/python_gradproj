@@ -27,7 +27,7 @@ def generateOutComingVector(city,map,except1,except2):
     db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
                          charset='utf8')
     cursor = db.cursor()
-    mysql ='select city, count(*) from citynote where departure ="' + city + '" and city !="'+except1+'"  and city != "'+ except2 +'" group by city order by count(*) desc'
+    mysql ='select toccity, count(*) from citytravel where fromcity ="' + city + '" and toccity !="'+except1+'"  and toccity != "'+ except2 +'" group by toccity order by count(*) desc'
     cursor.execute(mysql)
     results = cursor.fetchall()
     for row in results:
@@ -127,7 +127,7 @@ pwd = os.path.dirname(pwd)
 pwd = os.path.dirname(pwd)
 print pwd
 
-beijingtianjinPlotData = pwd+'\\Datas\\beijing_tianjin_plotData.txt'
+beijingtianjinPlotData_222 = pwd+'\\Datas\\beijing_tianjin_plotData.txt'
 changshawuhanPlotData = pwd+'\\Datas\\changsha_wuhan_plot.txt'
 beijingshanghaiPlotData = pwd+'\\Datas\\beijing_shanghai_plot.txt'
 similarityFilePath = pwd+'\\Datas\\outComming_Similarity.txt'
@@ -141,7 +141,7 @@ outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_Similarity_'+q
 def outputRPlotData(file,city1,city2):
     generateOutComingVector(city1,xMap, city2, city1)
     generateOutComingVector(city2, yMap, city2, city1)
-    fs = codecs.open(beijingtianjinPlotData, 'w+', encoding='utf8')
+    fs = codecs.open(file, 'w+', encoding='utf8')
     for city in cities:
         key = city[0]
         print key,xMap[key],yMap[key]
@@ -155,6 +155,7 @@ cities = listCityNames()
 xMap = {}
 yMap = {}
 
+outputRPlotData(beijingtianjinPlotData_222,'北京', '天津')
 
 # generateOutComingVector('北京',xMap, '天津', '北京')
 # generateOutComingVector('天津', yMap, '天津', '北京')
