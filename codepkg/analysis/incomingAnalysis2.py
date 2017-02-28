@@ -26,7 +26,7 @@ def generateInComingVector(city,map,except1,except2):
     db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
                          charset='utf8')
     cursor = db.cursor()
-    mysql ='select departure, count(*) from citynote where city ="' + city + '" and departure !="'+except1+'"  and departure != "'+ except2 +'" group by departure order by count(*) desc'
+    mysql ='select fromcity, count(*) from citytravel where toccity ="' + city + '" and fromcity !="'+except1+'"  and fromcity != "'+ except2 +'" group by fromcity order by count(*) desc'
     cursor.execute(mysql)
     results = cursor.fetchall()
     for row in results:
@@ -152,60 +152,25 @@ beijingxianPlotData = pwd+'\\Datas\\beijing_xian_incomming_plotData.txt'
 changshawuhanPlotData = pwd+'\\Datas\\changsha_wuhan_incomming_plot.txt'
 beijingshanghaiPlotData = pwd+'\\Datas\\beijing_shanghai_incomming_plot.txt'
 chengduabazhouPlotData = pwd+'\\Datas\\chengdu_abazhou_incomming_plot.txt'
-incomingSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\inComming_Similarity2.txt'
+chengdushenzhenPlotData = pwd+'\\Datas\\chengdu_shenzhen_incomming_plot.txt'
+abazhoudalizhouPlotData = pwd+'\\Datas\\abazhou_dalizhou_incomming_plot.txt'
+abazhousanyaPlotData = pwd+'\\Datas\\abazhou_sanya_incomming_plot.txt'
+incomingSimilarityFilePath2 = pwd+'\\Datas\\similarity_datas\\inComming_Similarity_2.txt'
 
 allCities = listCityNames()
 xMap = {}
 yMap = {}
 # outputRPlotData("北京","天津",beijingtianjinPlotData)
-# outputRPlotData("成都","阿坝州",chengduabazhouPlotData)
-# calculateAllIncommingSimilarity(incomingSimilarityFilePath)
-queryCity = r'张家界'
-inputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\inComming_Similarity2.txt'
-outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_incomming_Similarity_zhangjiajie'+'.txt'
-getMappingSimilarityData(queryCity,inputSimilarityFilePath,outputSimilarityFilePath)
+#outputRPlotData("阿坝州","三亚",abazhousanyaPlotData)
 
 
-# generateInComingVector('北京',xMap, '天津', '北京')
-# generateInComingVector('天津', yMap, '天津', '北京')
-#
-# fs = codecs.open(beijingtianjinPlotData, 'w+', encoding='utf8')
-# for city in cities:
-#     key = city[0]
-#     print key,xMap[key],yMap[key]
-#     fs.write(key + "," + str(xMap[key]) + "," + str(yMap[key]) + "\r\n")
-# fs.flush()
-# fs.close()
-# computeSimilarity('天津', '北京', xMap, yMap)
-# #
-# xMap = {}
-# yMap = {}
-# generateOutComingVector('长沙', xMap, '武汉', '长沙')
-# generateOutComingVector('武汉',yMap, '武汉', '长沙')
-# fs = codecs.open(changshawuhanPlotData, 'w+', encoding='utf8')
-# for city in cities:
-#     key = city[0]
-#     print key,xMap[key],yMap[key]
-#     fs.write(key + "," + str(xMap[key]) + "," + str(yMap[key]) + "\r\n")
-# fs.flush()
-# fs.close()
-# computeSimilarity('长沙', '武汉', xMap, yMap)
-#
-# xMap = {}
-# yMap = {}
-# generateOutComingVector('长沙', xMap, '衡阳', '长沙')
-# generateOutComingVector('衡阳',yMap, '衡阳', '长沙')
-# for city in cities:
-#     key = city[0]
-#     print key,xMap[key],yMap[key]
-# computeSimilarity('长沙', '衡阳', xMap, yMap)
+calculateAllIncommingSimilarity(incomingSimilarityFilePath2)
+# queryCity = r'张家界'
+# inputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\inComming_Similarity2.txt'
+# outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_incomming_Similarity_zhangjiajie'+'.txt'
+# getMappingSimilarityData(queryCity,inputSimilarityFilePath,outputSimilarityFilePath)
 
 
-# xMap = {}
-# yMap = {}
-# generateOutComingVector('长沙', xMap, '长沙', '石家庄')
-# generateOutComingVector('石家庄',yMap, '长沙', '石家庄')
-# for city in cities:
-#     key = city[0]
-#     print key,xMap[key],yMap[key]
-# computeSimilarity('长沙', '石家庄', xMap, yMap)
+
+
+

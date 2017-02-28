@@ -3,10 +3,11 @@
 import codecs
 import os
 import string
+
 import MySQLdb
-import geoutil
 
 from codepkg import mod_config
+from codepkg.data_process import geoutil
 
 MAXROW = 300000
 coords = {}

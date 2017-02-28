@@ -1,14 +1,14 @@
 # encoding: UTF-8
 
 import codecs
-import os
-import string
-import MySQLdb
-import codepkg.data_process.geoutil
 import math
+import os
+import sys
+
+import MySQLdb
 
 from codepkg import mod_config
-import sys
+
 reload(sys)
 sys.setdefaultencoding( "utf-8" )
 

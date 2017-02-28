@@ -2,11 +2,10 @@
 
 import codecs
 import os
-import string
-import MySQLdb
-import codepkg.data_process.geoutil
-import math
 import sys
+
+import MySQLdb
+
 reload(sys)
 sys.setdefaultencoding( "utf-8" )
 

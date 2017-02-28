@@ -4,6 +4,7 @@ import codecs
 import math
 import os
 import sys
+import time
 
 import MySQLdb
 
@@ -26,10 +27,14 @@ def generateInComingVector(city,map,except1,except2):
     db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
                          charset='utf8')
     cursor = db.cursor()
-    mysql ='select departure, count(*) from citynote where city ="' + city + '" and departure !="'+except1+'"  and departure != "'+ except2 +'" group by departure order by count(*) desc'
+    #mysql ='select fromcity, count(*) from citytravel where toccity ="' + city + '" and fromcity !="'+except1+'" and fromcity != "'+ except2 +'" group by fromcity'
+    mysql = 'select fromcity, count(*) from citytravel where toccity ="' + city + '" group by fromcity'
     cursor.execute(mysql)
     results = cursor.fetchall()
     for row in results:
+        key = str(row[0])
+        if key == except1 or key == except2:
+            continue
         map[row[0]] = row[1]
     for cityItem in allCities:
         key = cityItem[0]
@@ -51,7 +56,7 @@ def outputRPlotData(city1,city2,file):
     fs.close()
 
 def computeSimilarity(cityX,cityY,mapX,mapY):
-    print 'Computing similarity of ',cityX, '&', cityY,'------------------'
+
     sumCi = sum(mapX.values())
     lenCi = len(mapX.values())
     sumCj = sum(mapY.values())
@@ -77,41 +82,71 @@ def computeSimilarity(cityX,cityY,mapX,mapY):
     if sumProductX - 0 < 0.0001 or sumProductY - 0.0 < 0.0001:
         return 0
     rtn = sumInnerProduct / (math.sqrt(sumProductX) * math.sqrt(sumProductY))
-    print cityX,'&',cityY,' similairy = ',rtn
+
     return rtn
 
 # 计算所有城市两两之间的相似度
 def calculateAllIncommingSimilarity(file):
-    fs = codecs.open(file, 'w+', encoding='utf8')
+    insertOutSimilaritySQL = "insert into insimilarity(fromcity,tocity,similarity,createtime,updatetime) values(%s, %s, %s, %s,%s)"
+    db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
+                         charset='utf8')
+    cursor = db.cursor()
+    #fs = codecs.open(file, 'w+', encoding='utf8')
     count = 0
     myset = set()
-    for city1 in allCities:
-        key1 = city1[0]
-        for city2 in allCities:
-            key2 = city2[0]
 
-            setKey1 = city1+city2
-            setKey2 = city2+city1
+    queryAllUidsSQL = "select fromcity,tocity from insimilarity "
+    cursor.execute(queryAllUidsSQL)
+    uidResults = cursor.fetchall()
+    for row in uidResults:
+        icity1 = str(row[0])
+        icity2 = str(row[1])
+        myset.add(icity1 + icity2)
+
+    index1 = 1
+
+    for city1 in allCities:
+        key1 = str(city1[0])
+        index2 = 1
+        for city2 in allCities:
+
+            key2 = str(city2[0])
+            now = int(time.time())
+            timeArray = time.localtime(now)
+            otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+            print 'index1 = ',index1,'index2 = ',index2,otherStyleTime, 'Computing similarity of ', key1, '&', key2, '------------------'
+
+            index2 += 1
+            setKey1 = key1+key2
+            setKey2 = key2+key1
             if setKey1 in myset or setKey2 in myset:
                 continue
             if key1 == key2:
                 continue
+            if key1 == '神农架林区' or key2 == '神农架林区':
+                continue
             else:
                 xMap = {}
                 yMap = {}
+
                 generateInComingVector(key1, xMap, key1, key2)
                 generateInComingVector(key2,yMap, key1, key2)
                 similarity = computeSimilarity(key1, key2, xMap, yMap)
                 myset.add(setKey1)
-                fs.write(key1 + "," + key2 + ","+str(similarity)+"\r\n")
-                fs.write(key2 + "," + key1 + "," + str(similarity) + "\r\n")
-                # count+=1
-                # if count>10:
-                #     break
-        # if count>10:
-        #     break
-    fs.flush()
-    fs.close()
+
+                now = int(time.time())
+                timeArray = time.localtime(now)
+                otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+                print otherStyleTime,key1, '&', key2, ' similairy = ', similarity
+                insertInSimilarityValues = []
+                insertInSimilarityValue1 = (key1, key2, similarity, otherStyleTime, otherStyleTime)
+                insertInSimilarityValue2 = (key2, key1, similarity, otherStyleTime, otherStyleTime)
+                insertInSimilarityValues.append(insertInSimilarityValue1)
+                insertInSimilarityValues.append(insertInSimilarityValue2)
+                cursor.executemany(insertOutSimilaritySQL, insertInSimilarityValues)
+                db.commit()
+
+        index1 += 1
 
 def getMappingSimilarityData(city,infile,outfile):
     mymap = {}
@@ -152,60 +187,25 @@ beijingxianPlotData = pwd+'\\Datas\\beijing_xian_incomming_plotData.txt'
 changshawuhanPlotData = pwd+'\\Datas\\changsha_wuhan_incomming_plot.txt'
 beijingshanghaiPlotData = pwd+'\\Datas\\beijing_shanghai_incomming_plot.txt'
 chengduabazhouPlotData = pwd+'\\Datas\\chengdu_abazhou_incomming_plot.txt'
-incomingSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\inComming_Similarity2.txt'
+chengdushenzhenPlotData = pwd+'\\Datas\\chengdu_shenzhen_incomming_plot.txt'
+abazhoudalizhouPlotData = pwd+'\\Datas\\abazhou_dalizhou_incomming_plot.txt'
+abazhousanyaPlotData = pwd+'\\Datas\\abazhou_sanya_incomming_plot.txt'
+incomingSimilarityFilePath2 = pwd+'\\Datas\\similarity_datas\\inComming_Similarity_2.txt'
 
 allCities = listCityNames()
 xMap = {}
 yMap = {}
 # outputRPlotData("北京","天津",beijingtianjinPlotData)
-# outputRPlotData("成都","阿坝州",chengduabazhouPlotData)
-# calculateAllIncommingSimilarity(incomingSimilarityFilePath)
-queryCity = r'张家界'
-inputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\inComming_Similarity2.txt'
-outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_incomming_Similarity_zhangjiajie'+'.txt'
-getMappingSimilarityData(queryCity,inputSimilarityFilePath,outputSimilarityFilePath)
+#outputRPlotData("阿坝州","三亚",abazhousanyaPlotData)
 
 
-# generateInComingVector('北京',xMap, '天津', '北京')
-# generateInComingVector('天津', yMap, '天津', '北京')
-#
-# fs = codecs.open(beijingtianjinPlotData, 'w+', encoding='utf8')
-# for city in cities:
-#     key = city[0]
-#     print key,xMap[key],yMap[key]
-#     fs.write(key + "," + str(xMap[key]) + "," + str(yMap[key]) + "\r\n")
-# fs.flush()
-# fs.close()
-# computeSimilarity('天津', '北京', xMap, yMap)
-# #
-# xMap = {}
-# yMap = {}
-# generateOutComingVector('长沙', xMap, '武汉', '长沙')
-# generateOutComingVector('武汉',yMap, '武汉', '长沙')
-# fs = codecs.open(changshawuhanPlotData, 'w+', encoding='utf8')
-# for city in cities:
-#     key = city[0]
-#     print key,xMap[key],yMap[key]
-#     fs.write(key + "," + str(xMap[key]) + "," + str(yMap[key]) + "\r\n")
-# fs.flush()
-# fs.close()
-# computeSimilarity('长沙', '武汉', xMap, yMap)
-#
-# xMap = {}
-# yMap = {}
-# generateOutComingVector('长沙', xMap, '衡阳', '长沙')
-# generateOutComingVector('衡阳',yMap, '衡阳', '长沙')
-# for city in cities:
-#     key = city[0]
-#     print key,xMap[key],yMap[key]
-# computeSimilarity('长沙', '衡阳', xMap, yMap)
+calculateAllIncommingSimilarity(incomingSimilarityFilePath2)
+# queryCity = r'张家界'
+# inputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\inComming_Similarity2.txt'
+# outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_incomming_Similarity_zhangjiajie'+'.txt'
+# getMappingSimilarityData(queryCity,inputSimilarityFilePath,outputSimilarityFilePath)
 
 
-# xMap = {}
-# yMap = {}
-# generateOutComingVector('长沙', xMap, '长沙', '石家庄')
-# generateOutComingVector('石家庄',yMap, '长沙', '石家庄')
-# for city in cities:
-#     key = city[0]
-#     print key,xMap[key],yMap[key]
-# computeSimilarity('长沙', '石家庄', xMap, yMap)
+
+
+

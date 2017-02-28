@@ -357,5 +357,5 @@ spotDirectEdgeFile = pwd+'\\Datas\\directSpotEdges.txt'
 
 # getCityUndirectEdgePairs(cityUndirectEdgeFile)
 # getCityDirectEdgePairs(cityDirectEdgeFile)
-getSpotUndirectEdgePairs(spotUndirectEdgeFile)
+# getSpotUndirectEdgePairs(spotUndirectEdgeFile)
 # getSpotdirectEdgePairs(spotDirectEdgeFile)

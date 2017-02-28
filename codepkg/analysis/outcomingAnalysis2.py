@@ -1,14 +1,14 @@
 # encoding: UTF-8
 
 import codecs
-import os
-import string
-import MySQLdb
-import codepkg.data_process.geoutil
 import math
+import os
+import sys
+
+import MySQLdb
 
 from codepkg import mod_config
-import sys
+
 reload(sys)
 sys.setdefaultencoding( "utf-8" )
 
@@ -55,8 +55,8 @@ def computeSimilarity(cityX,cityY,mapX,mapY):
     sumProductY = 0.0
     for city in cities:
         key = city[0]
-        Cin = xMap[key]
-        Cjn = yMap[key]
+        Cin = mapX[key]
+        Cjn = mapY[key]
         #print key, xMap[key], yMap[key]
         # 考虑正值
         # sumInnerProduct += math.fabs(((Cin - ECi) * (Cjn - ECj)))
@@ -71,12 +71,17 @@ def computeSimilarity(cityX,cityY,mapX,mapY):
 
 # 计算所有城市两两之间的相似度
 def calculateAllSimilarity():
-    fs = codecs.open(similarityFilePath, 'w+', encoding='utf8')
+    fs = codecs.open(similarityFilePath2, 'w+', encoding='utf8')
     count = 0
+    myset = set()
     for city1 in cities:
         key1 = city1[0]
         for city2 in cities:
             key2 = city2[0]
+            setKey1 = city1 + city2
+            setKey2 = city2 + city1
+            if setKey1 in myset or setKey2 in myset:
+                continue
             if key1 == key2:
                 continue
             else:
@@ -85,12 +90,9 @@ def calculateAllSimilarity():
                 generateOutComingVector(key1, xMap, key1, key2)
                 generateOutComingVector(key2,yMap, key1, key2)
                 similarity = computeSimilarity(key1, key2, xMap, yMap)
-                fs.write(key1 + "," + key2 + ","+str(similarity)+"\r\n")
-                count+=1
-                if count>10:
-                    break
-        if count>10:
-            break
+                myset.add(setKey1)
+                fs.write(key1 + "," + key2 + "," + str(similarity) + "\r\n")
+                fs.write(key2 + "," + key1 + "," + str(similarity) + "\r\n")
     fs.flush()
     fs.close()
 
@@ -127,15 +129,20 @@ pwd = os.path.dirname(pwd)
 pwd = os.path.dirname(pwd)
 print pwd
 
-beijingtianjinPlotData_222 = pwd+'\\Datas\\beijing_tianjin_plotData.txt'
+beijingtianjinPlotData = pwd+'\\Datas\\beijing_tianjin_plot.txt'
 changshawuhanPlotData = pwd+'\\Datas\\changsha_wuhan_plot.txt'
 beijingshanghaiPlotData = pwd+'\\Datas\\beijing_shanghai_plot.txt'
-similarityFilePath = pwd+'\\Datas\\outComming_Similarity.txt'
+similarityFilePath2 = pwd+'\\Datas\\similarity_datas\\outComming_Similarity2.txt'
+
+cities = listCityNames()
+# xMap = {}
+# yMap = {}
 
 queryCity = '三亚'
 inputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\outComming_Similarity.txt'
 outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_Similarity_'+queryCity+'.txt'
-# getMappingSimilarityData('三亚',inputSimilarityFilePath,outputSimilarityFilePath)
+calculateAllSimilarity()
+#getMappingSimilarityData('三亚',inputSimilarityFilePath,outputSimilarityFilePath)
 
 #输出R制图数据组
 def outputRPlotData(file,city1,city2):
@@ -149,54 +156,7 @@ def outputRPlotData(file,city1,city2):
     fs.flush()
     fs.close()
 
+#outputRPlotData(beijingtianjinPlotData,'北京', '天津')
+#outputRPlotData(beijingshanghaiPlotData,'北京', '上海')
 
 
-cities = listCityNames()
-xMap = {}
-yMap = {}
-
-outputRPlotData(beijingtianjinPlotData_222,'北京', '天津')
-
-# generateOutComingVector('北京',xMap, '天津', '北京')
-# generateOutComingVector('天津', yMap, '天津', '北京')
-#
-# fs = codecs.open(beijingtianjinPlotData, 'w+', encoding='utf8')
-# for city in cities:
-#     key = city[0]
-#     print key,xMap[key],yMap[key]
-#     fs.write(key + "," + str(xMap[key]) + "," + str(yMap[key]) + "\r\n")
-# fs.flush()
-# fs.close()
-# computeSimilarity('天津', '北京', xMap, yMap)
-# #
-# xMap = {}
-# yMap = {}
-# generateOutComingVector('长沙', xMap, '武汉', '长沙')
-# generateOutComingVector('武汉',yMap, '武汉', '长沙')
-# fs = codecs.open(changshawuhanPlotData, 'w+', encoding='utf8')
-# for city in cities:
-#     key = city[0]
-#     print key,xMap[key],yMap[key]
-#     fs.write(key + "," + str(xMap[key]) + "," + str(yMap[key]) + "\r\n")
-# fs.flush()
-# fs.close()
-# computeSimilarity('长沙', '武汉', xMap, yMap)
-#
-# xMap = {}
-# yMap = {}
-# generateOutComingVector('长沙', xMap, '衡阳', '长沙')
-# generateOutComingVector('衡阳',yMap, '衡阳', '长沙')
-# for city in cities:
-#     key = city[0]
-#     print key,xMap[key],yMap[key]
-# computeSimilarity('长沙', '衡阳', xMap, yMap)
-
-
-# xMap = {}
-# yMap = {}
-# generateOutComingVector('长沙', xMap, '长沙', '石家庄')
-# generateOutComingVector('石家庄',yMap, '长沙', '石家庄')
-# for city in cities:
-#     key = city[0]
-#     print key,xMap[key],yMap[key]
-# computeSimilarity('长沙', '石家庄', xMap, yMap)

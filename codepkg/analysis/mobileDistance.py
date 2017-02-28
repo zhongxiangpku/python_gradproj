@@ -2,10 +2,10 @@
 
 import codecs
 import os
-import string
-import MySQLdb
-import codepkg.data_process.geoutil
 
+import MySQLdb
+
+import codepkg.data_process.geoutil
 from codepkg import mod_config
 
 fromToMap = {}
