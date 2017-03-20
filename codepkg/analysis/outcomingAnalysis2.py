@@ -135,13 +135,13 @@ beijingshanghaiPlotData = pwd+'\\Datas\\beijing_shanghai_plot.txt'
 similarityFilePath2 = pwd+'\\Datas\\similarity_datas\\outComming_Similarity2.txt'
 
 cities = listCityNames()
-# xMap = {}
-# yMap = {}
+xMap = {}
+yMap = {}
 
 queryCity = '三亚'
 inputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\outComming_Similarity.txt'
 outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_Similarity_'+queryCity+'.txt'
-calculateAllSimilarity()
+#calculateAllSimilarity()
 #getMappingSimilarityData('三亚',inputSimilarityFilePath,outputSimilarityFilePath)
 
 #输出R制图数据组
@@ -156,7 +156,7 @@ def outputRPlotData(file,city1,city2):
     fs.flush()
     fs.close()
 
-#outputRPlotData(beijingtianjinPlotData,'北京', '天津')
-#outputRPlotData(beijingshanghaiPlotData,'北京', '上海')
+outputRPlotData(beijingtianjinPlotData,'北京', '天津')
+outputRPlotData(beijingshanghaiPlotData,'北京', '上海')
 
 

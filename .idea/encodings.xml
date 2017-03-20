@@ -2,5 +2,8 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/Datas/populations.txt" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/clusterResultArcGISFile.txt" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/penetrate_r.csv" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/test.txt" charset="GBK" />
   </component>
 </project>

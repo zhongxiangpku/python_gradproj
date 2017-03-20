@@ -31,7 +31,9 @@ def countingToCity(city,file):
     db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
                          charset='utf8')
     cursor = db.cursor()
-    mysql = 'SELECT departure,count(*) FROM pythondb.citynote where city !="' + city + '" and departure = city group by departure order by count(*) desc limit 0,30'
+    #mysql = 'SELECT departure,count(*) FROM pythondb.citynote where city !="' + city + '" and departure = city group by departure order by count(*) desc limit 0,30'
+    mysql = 'SELECT fromcity,count(*) FROM pythondb.citytravel where toccity ="' + city + '" and fromcity != toccity group by fromcity order by count(*) desc limit 0,30'
+
     cursor.execute(mysql)
     results = cursor.fetchall()
     fs = codecs.open(file, 'w+', encoding='utf8')
@@ -51,15 +53,20 @@ print pwd
 valueFromOutputFile_beijing = pwd+'\\Datas\\Echart_datas\\from_beijing_output_Data.txt'
 valueFromOutputFile_shanghai = pwd+'\\Datas\\Echart_datas\\from_shanghai_output_Data.txt'
 valueFromOutputFile_tianjin = pwd+'\\Datas\\Echart_datas\\from_tianjin_output_Data.txt'
-valueFromOutputFile_shenzhen = pwd+'\\Datas\\Echart_datas\\from_shenzhen_output_Data.txt'
-countingFromCity('北京',valueFromOutputFile_beijing)
-countingFromCity('上海',valueFromOutputFile_shanghai)
-countingFromCity('天津',valueFromOutputFile_tianjin)
-countingFromCity('保定',valueFromOutputFile_shenzhen)
+valueFromOutputFile_xian = pwd+'\\Datas\\Echart_datas\\from_xian_output_Data.txt'
+# countingFromCity('北京',valueFromOutputFile_beijing)
+# countingFromCity('上海',valueFromOutputFile_shanghai)
+# countingFromCity('天津',valueFromOutputFile_tianjin)
+# countingFromCity('广州',valueFromOutputFile_guangzhou)
+# countingFromCity('西安',valueFromOutputFile_xian)
 
 valueToOutputFile_abazhou = pwd+'\\Datas\\Echart_datas\\to_abazhou_output_Data.txt'
 valueToOutputFile_guilin = pwd+'\\Datas\\Echart_datas\\to_guilin_output_Data.txt'
 valueToOutputFile_chengdu = pwd+'\\Datas\\Echart_datas\\to_chengdu_output_Data.txt'
+valueToOutputFile_qingdao = pwd+'\\Datas\\Echart_datas\\to_qingdao_output_Data.txt'
+valueToOutputFile_sanya = pwd+'\\Datas\\Echart_datas\\to_sanya_output_Data.txt'
 # countingToCity('阿坝州',valueToOutputFile_abazhou)
 # countingToCity('桂林',valueToOutputFile_guilin)
 # countingToCity('成都',valueToOutputFile_chengdu)
+countingToCity('青岛',valueToOutputFile_qingdao)
+countingToCity('三亚',valueToOutputFile_sanya)

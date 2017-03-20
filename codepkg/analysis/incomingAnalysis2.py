@@ -105,11 +105,6 @@ def calculateAllIncommingSimilarity(file):
                 myset.add(setKey1)
                 fs.write(key1 + "," + key2 + ","+str(similarity)+"\r\n")
                 fs.write(key2 + "," + key1 + "," + str(similarity) + "\r\n")
-                # count+=1
-                # if count>10:
-                #     break
-        # if count>10:
-        #     break
     fs.flush()
     fs.close()
 
@@ -164,11 +159,17 @@ yMap = {}
 #outputRPlotData("阿坝州","三亚",abazhousanyaPlotData)
 
 
-calculateAllIncommingSimilarity(incomingSimilarityFilePath2)
-# queryCity = r'张家界'
-# inputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\inComming_Similarity2.txt'
-# outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_incomming_Similarity_zhangjiajie'+'.txt'
-# getMappingSimilarityData(queryCity,inputSimilarityFilePath,outputSimilarityFilePath)
+#calculateAllIncommingSimilarity(incomingSimilarityFilePath2)
+
+queryCity = r'大理州'
+inputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\inComming_Similarity2.txt'
+#outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_incomming_Similarity_abazhou'+'.txt'
+# outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_incomming_Similarity_guilin'+'.txt'
+# outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_incomming_Similarity_sanya'+'.txt'
+# outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_incomming_Similarity_qingdao'+'.txt'
+# outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_incomming_Similarity_chengdu'+'.txt'
+outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_incomming_Similarity_dalizhou'+'.txt'
+getMappingSimilarityData(queryCity,inputSimilarityFilePath,outputSimilarityFilePath)
 
 
 

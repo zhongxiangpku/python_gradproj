@@ -94,7 +94,7 @@ def calculateAllSimilarity():
     fs.flush()
     fs.close()
 
-def getMappingSimilarityData(city,infile,outfile):
+def getMappingSimilarityData(city,outfile):
     mymap = {}
     db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
                          charset='utf8')
@@ -105,20 +105,31 @@ def getMappingSimilarityData(city,infile,outfile):
     for row in results:
        mymap[row[0]] = row[1]
 
-    ifs = codecs.open(infile, 'r+', encoding='utf8')
     ofs = codecs.open(outfile, 'w+', encoding='utf8')
-    lines = ifs.readlines()
-    for line in lines:
-        line = line.replace("\r\n", "")
-        strs = line.split(',')
 
-        print city,strs[0],strs[1],strs[2]
-        #print mymap[strs[0]],',',mymap[strs[1]],',',strs[2]
-        key = strs[0]
-        key = str(key)
-        if key == city:
-            ofs.write(mymap[strs[0]]+','+mymap[strs[1]]+','+strs[2]+"\r\n")
-    ifs.close()
+    selectOutSimilaritySQL = 'select fromcity,tocity,similarity from outsimilarity where fromcity ="'+city+'"';
+    cursor.execute(selectOutSimilaritySQL)
+    rows = cursor.fetchall()
+    for similarityRow in rows:
+        fromcity = similarityRow[0]
+        tocity = similarityRow[1]
+        similarity = similarityRow[2]
+        print fromcity,tocity,similarity
+        ofs.write(mymap[fromcity] + ',' + mymap[tocity] + ',' + str(similarity) + "\r\n")
+    # ifs = codecs.open(infile, 'r+', encoding='utf8')
+    #ofs = codecs.open(outfile, 'w+', encoding='utf8')
+    # lines = ifs.readlines()
+    # for line in lines:
+    #     line = line.replace("\r\n", "")
+    #     strs = line.split(',')
+    #
+    #     print city,strs[0],strs[1],strs[2]
+    #     #print mymap[strs[0]],',',mymap[strs[1]],',',strs[2]
+    #     key = strs[0]
+    #     key = str(key)
+    #     if key == city:
+    #         ofs.write(mymap[strs[0]]+','+mymap[strs[1]]+','+strs[2]+"\r\n")
+    #ifs.close()
     ofs.flush()
     ofs.close()
 
@@ -132,10 +143,10 @@ changshawuhanPlotData = pwd+'\\Datas\\changsha_wuhan_plot.txt'
 beijingshanghaiPlotData = pwd+'\\Datas\\beijing_shanghai_plot.txt'
 similarityFilePath = pwd+'\\Datas\\outComming_Similarity.txt'
 
-queryCity = '三亚'
+queryCity = '西安'
 inputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\outComming_Similarity.txt'
-outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_Similarity_'+queryCity+'.txt'
-# getMappingSimilarityData('三亚',inputSimilarityFilePath,outputSimilarityFilePath)
+outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_Similarity_xian.txt'
+getMappingSimilarityData('西安',outputSimilarityFilePath)
 
 #输出R制图数据组
 def outputRPlotData(file,city1,city2):

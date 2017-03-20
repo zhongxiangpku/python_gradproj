@@ -189,17 +189,17 @@ beijingshanghaiPlotData = pwd+'\\Datas\\beijing_shanghai_incomming_plot.txt'
 chengduabazhouPlotData = pwd+'\\Datas\\chengdu_abazhou_incomming_plot.txt'
 chengdushenzhenPlotData = pwd+'\\Datas\\chengdu_shenzhen_incomming_plot.txt'
 abazhoudalizhouPlotData = pwd+'\\Datas\\abazhou_dalizhou_incomming_plot.txt'
-abazhousanyaPlotData = pwd+'\\Datas\\abazhou_sanya_incomming_plot.txt'
+abazhouchengduPlotData = pwd+'\\Datas\\abazhou_chengdu_incomming_plot.txt'
 incomingSimilarityFilePath2 = pwd+'\\Datas\\similarity_datas\\inComming_Similarity_2.txt'
 
 allCities = listCityNames()
 xMap = {}
 yMap = {}
-# outputRPlotData("北京","天津",beijingtianjinPlotData)
-#outputRPlotData("阿坝州","三亚",abazhousanyaPlotData)
+outputRPlotData("阿坝州","成都",abazhouchengduPlotData)
+outputRPlotData("阿坝州","大理州",abazhoudalizhouPlotData)
 
 
-calculateAllIncommingSimilarity(incomingSimilarityFilePath2)
+#calculateAllIncommingSimilarity(incomingSimilarityFilePath2)
 # queryCity = r'张家界'
 # inputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\inComming_Similarity2.txt'
 # outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_incomming_Similarity_zhangjiajie'+'.txt'

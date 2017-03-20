@@ -141,6 +141,28 @@ def getMappingSimilarityData(city,infile,outfile):
     ofs.flush()
     ofs.close()
 
+def getMappingSimilarityData(city,outfile):
+    mymap = {}
+    db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
+                         charset='utf8')
+    cursor = db.cursor()
+    mysql = 'select cname, arcgis_name from city'
+    cursor.execute(mysql)
+    results = cursor.fetchall()
+    for row in results:
+       mymap[row[0]] = row[1]
+
+    ofs = codecs.open(outfile, 'w+', encoding='utf8')
+
+    selectInSimilaritySQL = 'select fromcity,tocity,similarity from insimilarity where tocity ="'+city+'"';
+    cursor.execute(selectInSimilaritySQL)
+    rows = cursor.fetchall()
+    for similarityRow in rows:
+        fromcity = similarityRow[0]
+        tocity = similarityRow[1]
+        similarity = similarityRow[2]
+        print fromcity,tocity,similarity
+        ofs.write(mymap[fromcity] + ',' + mymap[tocity] + ',' + str(similarity) + "\r\n")
 
 pwd = os.getcwd()
 pwd = os.path.dirname(pwd)
@@ -160,10 +182,10 @@ yMap = {}
 # outputRPlotData("北京","天津",beijingtianjinPlotData)
 # outputRPlotData("成都","阿坝州",chengduabazhouPlotData)
 # calculateAllIncommingSimilarity(incomingSimilarityFilePath)
-queryCity = r'张家界'
-inputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\inComming_Similarity2.txt'
-outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_incomming_Similarity_zhangjiajie'+'.txt'
-getMappingSimilarityData(queryCity,inputSimilarityFilePath,outputSimilarityFilePath)
+queryCity = r'三亚'
+#inputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\inComming_Similarity2.txt'
+outputSimilarityFilePath = pwd+'\\Datas\\similarity_datas\\output_incomming_Similarity_sanya'+'.txt'
+getMappingSimilarityData(queryCity,outputSimilarityFilePath)
 
 
 # generateInComingVector('北京',xMap, '天津', '北京')
