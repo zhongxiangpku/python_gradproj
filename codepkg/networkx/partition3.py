@@ -221,4 +221,6 @@ def selectClusteResult(infile):
 clusterResultFile = pwd + '\\test.txt'
 clusterResultArcGISFile = pwd + '\\clusterResultArcGISFile.txt'
 #readClusteResult(clusterResultFile,clusterResultArcGISFile)
-selectClusteResult(clusterResultFile)
+# selectClusteResult(clusterResultFile)
+
+listCityNames()

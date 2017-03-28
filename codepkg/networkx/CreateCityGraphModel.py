@@ -20,18 +20,26 @@ def getGraphEdgeSet(outputFile):
     db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
                          charset=mod_config.dbcharset)
     cursor = db.cursor()
+
+    validCityLst = set()
+    mysql = 'select cname from city where cname != "神农架林区" and usercount>=20 and usercount * 1.0 /(population *100) > 0.001'
+    cursor.execute(mysql)
+    results = cursor.fetchall()
+    for row in results:
+        cityKey = str(row[0])
+        validCityLst.add(cityKey)
+
     mysql = 'select fromcity,toccity,count(*) as frenquency from citytravel where fromcity!=toccity GROUP BY  fromcity,toccity having count(*)>=10'
     cursor.execute(mysql)
     results = cursor.fetchall()
     edgeMap = {}
 
-    # mysql = 'select cname from city where cname != "神农架林区" and usercount>=20 and usercount * 1.0 /(population *100) > 0.001'
-
     for row in results:
         start = str(row[0])
         end = str(row[1])
         freq = int(row[2])
-
+        if start not in validCityLst or end not in validCityLst:
+            continue
         key1 = start + ";"+end
         key2 = end + ";"+start
         if key1 not in edgeMap.keys() and key2 not in edgeMap.keys():
@@ -148,13 +156,66 @@ def computeCentrality(graph,node_degree_centrality_file, node_betweenness_centra
     ebcfs.close()
 
 
+#计算knn
+def computeKnn(graph, knn_file,weight=None):
+    G = nx.path_graph(4)
+    G.edge[1][2]['weight'] = 3
+    print nx.k_nearest_neighbors(G)
+    knnfs = codecs.open(knn_file, 'w+', encoding='utf-8')
+    knn = nx.average_degree_connectivity(graph)
+    print graph, 'knn as follows:'
+    print knn
+    sumknn = sum(knn.values())
+    minknn = min(knn.keys())
+    maxknn = max(knn.keys())
+    index = maxknn
+    currentSum = 0.0
+    while index>= minknn:
+        if index in knn.keys():
+            currentSum = knn[index]
+
+        else:
+            index -= 1
+            continue
+        freq = currentSum * 1.0 / sumknn
+        knnfs.write(str(index) + ',' + str(freq) + '\r\n')
+        print index  , freq
+        index -= 1
+    #for (key, value) in knn.items():
+    #    knnfs.write(str(key)+ ',' + str(value) + '\r\n')
+    knnfs.flush()
+    knnfs.close()
+
+
 pwd = os.getcwd()
 pwd = os.path.dirname(pwd)
 pwd = os.path.dirname(pwd)
 #不考虑地理距离建网络
-cityGraphEdgeSetFile2 = pwd + '/Datas/Edge_datas/cityGraphEdgeSet2.txt'
-getGraphEdgeSet(cityGraphEdgeSetFile2)
+# cityGraphEdgeSetFile2 = pwd + '/Datas/Edge_datas/cityGraphEdgeSet2.txt'
+# getGraphEdgeSet(cityGraphEdgeSetFile2)
+# graph  = createNetwork("城市交互网络模型",False,cityGraphEdgeSetFile2)
+# computeBasicIndex(graph)
 
-graph  = createNetwork("城市交互网络模型",False,cityGraphEdgeSetFile2)
-computeBasicIndex(graph)
+validCityGraphEdgeSetFile = pwd + '/Datas/Edge_datas/validCityGraphEdgeSet.txt'
+# getGraphEdgeSet(validCityGraphEdgeSetFile)
+graph  = createNetwork("城市交互网络模型",False,validCityGraphEdgeSetFile)
+# computeBasicIndex(graph)
+
+c = list(nx.k_clique_communities(graph, 6))
+print c
+#计算中心性
+# node_degree_centrality_file= pwd +'/Datas/Centrality_datas/cityUndirectEdge_nodeDegreeCentralityFile.txt'
+# node_betweenness_centrality_file= pwd +'/Datas/Centrality_datas/cityUndirectEdge_nodeBetweennessCentralityFile.txt'
+# node_closeness_centrality_file= pwd +'/Datas/Centrality_datas/cityUndirectEdge_nodeClosenessCentralityFile.txt'
+# edge_betweenness_centrality_file= pwd +'/Datas/Centrality_datas/cityUndirectEdge_edgeBetweennessCentralityFile.txt'
+# computeCentrality(graph,
+#                   node_degree_centrality_file,
+#                   node_betweenness_centrality_file,
+#                   node_closeness_centrality_file,
+#                   edge_betweenness_centrality_file)
+
+
+#计算knn
+# cityUndirectEdge_knn_file= pwd +'\\Datas\\knn_datas\\knnFile4.txt'
+# computeKnn(graph, cityUndirectEdge_knn_file)
 
