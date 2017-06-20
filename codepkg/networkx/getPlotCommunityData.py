@@ -181,3 +181,7 @@ def getSubGraphs(communityFile,subGraphFile1,subGraphFile2,subGraphFile3,subGrap
 clusterResultFile = pwd + '\\community_level2.csv'
 clusterResultArcGISFile = pwd + '\\community_data2.txt'
 readClusteResult(clusterResultFile,clusterResultArcGISFile)
+
+clusterResultFile = pwd + '\\community_level1.csv'
+clusterResultArcGISFile = pwd + '\\community_data1.txt'
+readClusteResult(clusterResultFile,clusterResultArcGISFile)

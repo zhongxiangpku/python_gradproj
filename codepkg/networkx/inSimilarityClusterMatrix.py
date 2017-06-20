@@ -25,7 +25,7 @@ def createMatrix():
     db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
                          charset=mod_config.dbcharset)
     cursor = db.cursor()
-    mysql = 'select fromcity,toccity, count(*) from citytravel group by fromcity,toccity '
+    mysql = 'select fromcity,tocity, similarity from insimilarity_259 group by fromcity,tocity '
     cursor.execute(mysql)
     results = cursor.fetchall()
 
@@ -33,10 +33,10 @@ def createMatrix():
     for row in results:
         fromcity = row[0]
         toccity = row[1]
-        count = row[2]
-        print fromcity,toccity,count
+        similarity = row[2]
+        print fromcity,toccity,similarity
         key = fromcity+toccity
-        mymap[key] = count
+        mymap[key] = similarity
 
     partitionCities = listCityNames()
 
@@ -47,7 +47,6 @@ def createMatrix():
         index += 1
 
     fs = codecs.open(clusterFile, 'w+', encoding='utf8')
-    #fs2 = codecs.open(clusterFile, 'w+', encoding='utf8')
 
     length = len(partitionCities)
     matrix = [[0 for i in range(length)] for i in range(length)]
@@ -67,7 +66,7 @@ def createMatrix():
             else:
                 key = key1+key2
                 if key in mymap.keys():
-                    matrix[index1][index2] = mymap[key]
+                    matrix[index1][index2] = 1.0/mymap[key]
     names = ''
     for i in range(length):
         names += partitionCities[i][0]+','
@@ -91,17 +90,13 @@ def createMatrix():
         fs.write(mystr)
     fs.close()
 
-# partitionCities = listCityNames()
-# print len(partitionCities)
-# for row in partitionCities:
-#     print row[0]
 pwd = os.getcwd()
 pwd = os.path.dirname(pwd)
 pwd = os.path.dirname(pwd)
 print pwd
 
-clusterFile = pwd + '\\cluster3.txt'
-#createMatrix()
+clusterFile = pwd + '\\inSimilarityClusterMatrix.txt'
+createMatrix()
 
 formatCityNameMap = {}
 def getFormatCityName():
@@ -166,62 +161,10 @@ def readClusteResult(infile,outfile):
     ofs.close()
 
 
-def selectClusteResult(infile):
-    ifs = codecs.open(infile, encoding='gbk')
-    lines = ifs.readlines()
-    ifs.close()
 
-    keyList = []
-    valueList = []
-    mymap={}
-    length = len(lines)
+# clusterResultFile = pwd + '\\test.txt'
+# clusterResultArcGISFile = pwd + '\\clusterResultArcGISFile.txt'
+#readClusteResult(clusterResultFile,clusterResultArcGISFile)
+# selectClusteResult(clusterResultFile)
 
-    for i in range(length):
-        number = 0
-
-        if i%2 == 0:
-            print 'keys=', lines[i]
-            line = lines[i].strip('\r\n')
-            line = ' '.join(line.split())
-            line = line.strip(' ')
-            items = string.split(line, ' ')
-            for item in items:
-                keyList.append(item)
-        else:
-            print 'values=',lines[i]
-            line = lines[i].strip('\r\n')
-            line = ' '.join(line.split())
-            line = line.strip(' ')
-            items = string.split(line, ' ')
-            for item in items:
-                valueList.append(item)
-
-
-            for j in range(len(keyList)):
-                mymap[keyList[j]] = valueList[j]
-            keyList = []
-            valueList = []
-
-    getFormatCityName()
-    for key in formatCityNameMap.keys():
-        if key in mymap.keys():
-            print key,formatCityNameMap[key],mymap[key]
-        else:
-            print key, formatCityNameMap[key], 0
-
-    print 'values:',mymap.values()
-    for i in range(51):
-        d1 = {k: v for k, v in mymap.items() if v == str(i)}
-        strkey = ''
-        for key in d1:
-           strkey = strkey+key+','
-        print i,strkey[:-1]
-
-
-listCityNames()
-clusterResultFile = pwd + '\\test.txt'
-clusterResultArcGISFile = pwd + '\\inClusterResultArcGISFile2.txt'
-readClusteResult(clusterResultFile,clusterResultArcGISFile)
-selectClusteResult(clusterResultFile)
-
-
+# listCityNames()

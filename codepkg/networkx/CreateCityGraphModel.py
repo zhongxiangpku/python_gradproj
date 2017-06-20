@@ -59,6 +59,55 @@ def getGraphEdgeSet(outputFile):
     fs.flush()
     fs.close()
 
+def getEnGraphEdgeSet(outputFile):
+    db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
+                         charset=mod_config.dbcharset)
+    cursor = db.cursor()
+
+    validCityLst = set()
+    validCityMap = {}
+    mysql = 'select cname,ename from city where cname != "神农架林区" and usercount>=20 and usercount * 1.0 /(population *100) > 0.001'
+    cursor.execute(mysql)
+    results = cursor.fetchall()
+    for row in results:
+        cityKey = str(row[0])
+        validCityLst.add(cityKey)
+        validCityMap[cityKey] = str(row[1])
+
+    mysql = 'select fromcity,toccity,count(*) as frenquency from citytravel where fromcity!=toccity GROUP BY  fromcity,toccity having count(*)>=10'
+    cursor.execute(mysql)
+    results = cursor.fetchall()
+    edgeMap = {}
+
+    for row in results:
+        start = str(row[0])
+        end = str(row[1])
+        freq = int(row[2])
+        if start not in validCityLst or end not in validCityLst:
+            continue
+
+        start = validCityMap[start]
+        end = validCityMap[end]
+
+        key1 = start + ";"+end
+        key2 = end + ";"+start
+        if key1 not in edgeMap.keys() and key2 not in edgeMap.keys():
+            edgeMap[key1] = freq
+        elif key1 not in edgeMap.keys() and key2  in edgeMap.keys():
+            edgeMap[key2] = edgeMap[key2]  + freq
+        elif key1 in edgeMap.keys() and key2 not in edgeMap.keys():
+            edgeMap[key1] = edgeMap[key1]  + freq
+        else:
+            print 'process error!'
+
+    fs = codecs.open(outputFile, 'w+', encoding='utf8')
+    #fs.write("start;frequency")
+    for k, v in edgeMap.items():
+        print k, v
+        fs.write(k+";"+str(v)+"\r\n")
+    fs.flush()
+    fs.close()
+
 #根据边文件构建不带地理距离加权的网络（城市－景点，有向－无向）
 def createNetwork(gname, directed,  file):
     #os.chdir('C:\Users\dell\Desktop')
@@ -198,11 +247,15 @@ pwd = os.path.dirname(pwd)
 
 validCityGraphEdgeSetFile = pwd + '/Datas/Edge_datas/validCityGraphEdgeSet.txt'
 # getGraphEdgeSet(validCityGraphEdgeSetFile)
-graph  = createNetwork("城市交互网络模型",False,validCityGraphEdgeSetFile)
+
+validEnCityGraphEdgeSetFile = pwd + '/Datas/Edge_datas/validEnCityGraphEdgeSet.txt'
+getEnGraphEdgeSet(validEnCityGraphEdgeSetFile)
+
+# graph  = createNetwork("城市交互网络模型",False,validCityGraphEdgeSetFile)
 # computeBasicIndex(graph)
 
-c = list(nx.k_clique_communities(graph, 6))
-print c
+# c = list(nx.k_clique_communities(graph, 6))
+# print c
 #计算中心性
 # node_degree_centrality_file= pwd +'/Datas/Centrality_datas/cityUndirectEdge_nodeDegreeCentralityFile.txt'
 # node_betweenness_centrality_file= pwd +'/Datas/Centrality_datas/cityUndirectEdge_nodeBetweennessCentralityFile.txt'

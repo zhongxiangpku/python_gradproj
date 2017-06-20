@@ -24,7 +24,7 @@ def mappingUserCountRankPlot(file):
         index+=1
     fs.close()
 
-def mappingCityVisitCountRankPlot(file):
+def mappingMobileCountRankPlot(file):
     fs = codecs.open(file, 'w+', encoding='utf8')
     db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
                      charset=mod_config.dbcharset)
@@ -44,8 +44,26 @@ pwd = os.path.dirname(pwd)
 pwd = os.path.dirname(pwd)
 print pwd
 
+def mappingCityVisitCountRankPlot(file):
+    fs = codecs.open(file, 'w+', encoding='utf8')
+    db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
+                     charset=mod_config.dbcharset)
+    cursor = db.cursor()
+    queryUserCountSQL = 'select obode,avg(gyration),avg(visitcity) from pythondb.user where visitcity>=1 group by obode'
+    cursor.execute(queryUserCountSQL)
+    rows = cursor.fetchall()
+    index = 1
+    for row in rows:
+        key = str(row[0])
+        fs.write(str(index)+";" +key+";"+str(row[1])+ ";"+str(row[2])+"\r\n")
+        index+=1
+    fs.close()
+
 # rankUserCountFile = pwd + '\\rankusercountplot.txt'
 # mappingUserCountRankPlot(rankUserCountFile)
+
+# rankMobileCountFile = pwd + '\\rankMobileCount.txt'
+# mappingMobileCountRankPlot(rankMobileCountFile)
 
 rankCityVisitCountFile = pwd + '\\rankCityVisitCount.txt'
 mappingCityVisitCountRankPlot(rankCityVisitCountFile)

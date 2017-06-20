@@ -26,11 +26,20 @@ def listCityNames():
     return cityLst
     #return list(results)
 
-
+validCityMap = {}
 def generateInComingVector(city,map,except1,except2):
     db = MySQLdb.connect(mod_config.dbhost, mod_config.dbuser, mod_config.dbpassword, mod_config.dbname,
                          charset='utf8')
     cursor = db.cursor()
+
+
+    mysql = 'select cname,ename from city '
+    cursor.execute(mysql)
+    results = cursor.fetchall()
+    for row in results:
+        cityKey = str(row[0])
+        validCityMap[cityKey] = str(row[1])
+
     #mysql ='select fromcity, count(*) from citytravel where toccity ="' + city + '" and fromcity !="'+except1+'" and fromcity != "'+ except2 +'" group by fromcity'
     mysql = 'select fromcity, count(*) from citytravel where toccity ="' + city + '" group by fromcity'
     cursor.execute(mysql)
@@ -42,12 +51,7 @@ def generateInComingVector(city,map,except1,except2):
         if key not in allCities:
             continue
         map[key] = row[1]
-    # for cityItem in allCities:
-    #     key = cityItem[0]
-    #     if key in map.keys():
-    #         continue
-    #     else:
-    #         map[key] = 0
+
 
 #输出R制图数据组
 def outputRPlotData(city1,city2,file):
